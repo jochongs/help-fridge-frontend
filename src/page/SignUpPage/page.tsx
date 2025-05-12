@@ -4,17 +4,29 @@
 
 import { useState } from "react";
 import useSignup from "./hooks/useSignup";
+import useCheckIdDuplicate from "./hooks/useCheckIdDuplicate";
 
 // 리액트로 만들어야지
 export default function SignUpPage() {
   const [idInput, setIdInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [nicknameInput, setNicknameInput] = useState("");
+  const [isIdChecked, setIsIdChecked] = useState(false);
+
   const { mutate } = useSignup();
 
-  const handleIdCheck = () => {};
+  const { mutate: idCheckMutate } = useCheckIdDuplicate(setIsIdChecked);
+
+  const handleIdCheck = () => {
+    idCheckMutate(idInput);
+  };
 
   const handleSignUp = () => {
+    if (!isIdChecked) {
+      alert("아이디 중복확인을 해주세요.");
+      return;
+    }
+
     mutate({
       id: idInput,
       pw: passwordInput,
@@ -38,15 +50,25 @@ export default function SignUpPage() {
               type="text"
               id="id"
               className="pl-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500 h-10"
-              onChange={(e) => setIdInput(e.target.value)}
+              onChange={(e) => {
+                setIsIdChecked(false);
+                setIdInput(e.target.value);
+              }}
             />
-            <button
-              type="button"
-              onClick={handleIdCheck}
-              className="mt-2 text-white bg-blue-500 h-10 px-4 rounded-lg cursor-pointer"
-            >
-              중복확인
-            </button>
+            {isIdChecked ? (
+              <span className="text-green-500 text-sm mt-1">
+                사용 가능한 아이디입니다.
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={handleIdCheck}
+                className="mt-2 text-white bg-blue-500 h-10 px-4 rounded-lg cursor-pointer"
+                disabled={isIdChecked}
+              >
+                중복확인
+              </button>
+            )}
           </div>
           <div className="mb-4">
             <label

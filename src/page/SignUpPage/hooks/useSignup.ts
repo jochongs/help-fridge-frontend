@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "../../../util/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface SignupDto {
   id: string;
@@ -67,13 +68,20 @@ export default function useSignup() {
 
       const statusCode = data.status;
 
-      if (statusCode === 409) {
-        return alert("이미 존재하는 아이디입니다.");
-      }
-
       navigate("/login");
     },
-    onError() {
+    onError(err) {
+      if (axios.isAxiosError(err)) {
+        const statusCode = err.response?.status;
+        if (statusCode === 400) {
+          return alert("아이디 또는 비밀번호가 잘못되었습니다.");
+        }
+
+        if (statusCode === 409) {
+          return alert("이미 존재하는 아이디입니다.");
+        }
+      }
+
       alert("알 수 없는 오류가 발생했습니다. 다시 시도해주세요.");
     },
   });

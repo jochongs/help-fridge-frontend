@@ -71,6 +71,12 @@ export default function LoginPage() {
             로그인
           </button>
         </form>
+
+        <div className="mt-4 text-center">
+          <a href="/register" className="text-blue-500 hover:underline">
+            회원가입
+          </a>
+        </div>
       </div>
     </div>
   );

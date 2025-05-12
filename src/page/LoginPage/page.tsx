@@ -73,7 +73,7 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-4 text-center">
-          <a href="/register" className="text-blue-500 hover:underline">
+          <a href="/signup" className="text-blue-500 hover:underline">
             회원가입
           </a>
         </div>

@@ -1,8 +1,13 @@
 import Chip from "./Chip";
 import React from "react";
 import { useDrag } from "react-dnd";
+import type { FoodEntity } from "../types/api/food/model/food";
 
-export default function FoodCard() {
+interface Props {
+  food: FoodEntity;
+}
+
+export default function FoodCard({ food }: Props) {
   const [{ opacity }, dragRef] = useDrag(() => ({
     type: "FOOD", // <- DropArea에서 받을 수 있도록
     item: { id: 1 }, // id는 예시, 실제 데이터 넣기
@@ -19,7 +24,7 @@ export default function FoodCard() {
     >
       <div>
         <header className="flex">
-          <h3 className="text-xl font-semibold mr-2">고기 만두</h3>
+          <h3 className="text-xl font-semibold mr-2">{food.name}</h3>
           <Chip type="orange" className="mr-0.5">
             D-3
           </Chip>

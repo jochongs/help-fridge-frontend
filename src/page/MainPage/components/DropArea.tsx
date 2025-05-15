@@ -13,7 +13,6 @@ type Props2 = {
 
 export default function ThrowAwayDialog({ fridge, onClose, isOpen }: Props2) {
   const handleClose = () => {
-    console.log("hi");
     onClose();
   };
 

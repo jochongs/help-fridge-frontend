@@ -2,39 +2,53 @@ import { useDrop } from "react-dnd";
 import type { StrictPropsWithChildren } from "../../../types/react";
 import { cn } from "../../../util/cn";
 import { overlay, type OverlayAsyncControllerComponent } from "overlay-kit";
+import type { FridgeEntity } from "../../../types/api/fridge/model/fridge";
+import FoodCard from "../../../components/FoodCard";
 
-type Props2 = any & {
-  item: { id: number };
+type Props2 = {
+  fridge: FridgeEntity;
+  onClose: () => void;
+  isOpen?: boolean;
 };
 
-export default function ThrowAwayDialog({ item, close }: Props2) {
+export default function ThrowAwayDialog({ fridge, onClose, isOpen }: Props2) {
+  const handleClose = () => {
+    console.log("hi");
+    onClose();
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-      <div className="bg-white p-6 w-[320px] rounded-2xl shadow-xl relative">
-        <button onClick={() => close()} className="absolute top-3 right-3">
-          ✕
-        </button>
-        <h2 className="text-lg font-bold mb-3">몇 개를 버릴까요?</h2>
-
-        <div className="border p-3 rounded-xl text-sm text-gray-600 mb-4">
-          <p>재료 ID: {item.id}</p>
-        </div>
-
-        <div className="flex items-center mb-4">
-          <span className="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center text-lg font-bold">
-            1
-          </span>
-          <span className="ml-3">개 버릴래요.</span>
-        </div>
-
-        <button
-          onClick={() => close(1)}
-          className="w-full bg-gray-100 text-center text-gray-800 py-2 rounded-md font-semibold"
+    <>
+      {isOpen ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
+          onClick={handleClose}
         >
-          버리기
-        </button>
-      </div>
-    </div>
+          <div
+            className="flex flex-col bg-white p-6 w-[334px] rounded-2xl shadow-xl relative px-5 pt-5 py-4"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <h3 className="text-xl font-semibold">몇 개를 버릴까요?</h3>
+            <article className="w-[294px] px-4 py-2.5 rounded-lg border-2 border-[#F2F2F2] mt-3">
+              <FoodCard fridge={fridge} />
+            </article>
+            <div className="border-[1.5px] border-[#F2F2F2] my-3"></div>
+            <div className="flex items-center-safe">
+              <input
+                type="text"
+                className="w-8.5 h-8.5 text-xl rounded-sm bg-[#F0F0F0] mr-1.5 text-[#494949] flex justify-center items-center text-center focus:outline-none"
+              />
+              <span className="text-xl text-[##494949]">개 버릴래요.</span>
+            </div>
+            <button className="h-12 bg-[#F0F0F0] text-xl font-semibold mt-5 rounded-lg cursor-pointer">
+              버리기
+            </button>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
 
@@ -46,11 +60,16 @@ interface Props extends StrictPropsWithChildren {
 export function DropArea({ children, className = "", icon }: Props) {
   const [{ isOver }, dropRef] = useDrop(() => ({
     accept: "FOOD", // FoodCard에서 type 지정 필요
-    drop: async (item: { id: number }) => {
-      console.log("드롭된 항목:", item);
-      // 여기서 먹은 것 or 못 먹은 것 처리
+    drop: async (item: { fridge: FridgeEntity }) => {
+      const fridge = item.fridge;
       const result = await overlay.openAsync<any>((props) => (
-        <ThrowAwayDialog {...props} item={item} />
+        <ThrowAwayDialog
+          {...props}
+          fridge={fridge}
+          onClose={() => {
+            overlay.closeAll();
+          }}
+        />
       ));
     },
     collect: (monitor) => ({

@@ -1,5 +1,7 @@
 import FoodCard from "../../../components/FoodCard";
+import FoodCardDrag from "../../../components/FoodCardDrag";
 import type { FoodEntity } from "../../../types/api/food/model/food";
+import { fridge } from "../../../types/api/fridge/model/fridge";
 import type { StrictPropsWithChildren } from "../../../types/react";
 import { storageType, type StorageType } from "../../../types/storage-type";
 import { cn } from "../../../util/cn";
@@ -24,10 +26,11 @@ export default function SpaceSection({
       <article>
         <header className="font-semibold text-2xl">{children}</header>
         <main className="mt-4 grid grid-cols-3 gap-2 h-[300px] overflow-y-scroll pb-4 [&::-webkit-scrollbar]:hidden items-start">
-          {fridgeList &&
+          <FoodCardDrag key={fridge.food.idx} fridge={fridge} />
+          {/* {fridgeList &&
             fridgeList.map((fridge) => (
               <FoodCard key={fridge.food.idx} fridge={fridge} />
-            ))}
+            ))} */}
         </main>
       </article>
     </section>

@@ -1,7 +1,4 @@
 import Chip from "./Chip";
-import React from "react";
-import { useDrag } from "react-dnd";
-import type { FoodEntity } from "../types/api/food/model/food";
 import type { FridgeEntity } from "../types/api/fridge/model/fridge";
 
 interface Props {
@@ -9,14 +6,6 @@ interface Props {
 }
 
 export default function FoodCard({ fridge }: Props) {
-  const [{ opacity }, dragRef] = useDrag(() => ({
-    type: "FOOD", // <- DropArea에서 받을 수 있도록
-    item: { id: 1 }, // id는 예시, 실제 데이터 넣기
-    collect: (monitor) => ({
-      opacity: monitor.isDragging() ? 0.5 : 1,
-    }),
-  }));
-
   /**
    * @param expiredAt - 유통기한
    * @param expiration - 유통기한이 null일 경우
@@ -71,31 +60,25 @@ export default function FoodCard({ fridge }: Props) {
   const color = calculateColor(diffDays);
 
   return (
-    <article
-      ref={dragRef as any}
-      style={{ opacity }}
-      className="w-full p-4 rounded-lg border-2 border-[#F2F2F2] cursor-pointer"
-    >
-      <div>
-        <header className="flex">
-          <h3 className="text-xl font-semibold mr-2">{fridge.food.name}</h3>
-          <Chip type={color} className="mr-0.5">
-            {diffDays < 0 ? "유통기한 만료" : `D-${diffDays}`}
-          </Chip>
-          <Chip type="gray">{`${fridge.amount}${fridge.unit.name}`}</Chip>
-        </header>
-        <main className="mt-3">
-          <p className="text-[#969696] text-base font-normal ">
-            넣은 날짜: {formatDate(new Date(fridge.createdAt))}
-          </p>
-          <p className="text-[#969696] text-base font-normal mt-1.5">
-            소비 기한:{" "}
-            {formatDate(
-              calculateExpirationDate(fridge.expiredAt, fridge.food.expiration),
-            )}
-          </p>
-        </main>
-      </div>
-    </article>
+    <div>
+      <header className="flex">
+        <h3 className="text-xl font-semibold mr-2">{fridge.food.name}</h3>
+        <Chip type={color} className="mr-0.5">
+          {diffDays < 0 ? "유통기한 만료" : `D-${diffDays}`}
+        </Chip>
+        <Chip type="gray">{`${fridge.amount}${fridge.unit.name}`}</Chip>
+      </header>
+      <main className="mt-3">
+        <p className="text-[#969696] text-base font-normal ">
+          넣은 날짜: {formatDate(new Date(fridge.createdAt))}
+        </p>
+        <p className="text-[#969696] text-base font-normal mt-1.5">
+          소비 기한:{" "}
+          {formatDate(
+            calculateExpirationDate(fridge.expiredAt, fridge.food.expiration),
+          )}
+        </p>
+      </main>
+    </div>
   );
 }

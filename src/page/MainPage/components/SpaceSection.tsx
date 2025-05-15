@@ -26,11 +26,11 @@ export default function SpaceSection({
       <article>
         <header className="font-semibold text-2xl">{children}</header>
         <main className="mt-4 grid grid-cols-3 gap-2 h-[300px] overflow-y-scroll pb-4 [&::-webkit-scrollbar]:hidden items-start">
-          <FoodCardDrag key={fridge.food.idx} fridge={fridge} />
-          {/* {fridgeList &&
+          {/* <FoodCardDrag key={fridge.food.idx} fridge={fridge} /> */}
+          {fridgeList &&
             fridgeList.map((fridge) => (
-              <FoodCard key={fridge.food.idx} fridge={fridge} />
-            ))} */}
+              <FoodCardDrag key={fridge.food.idx} fridge={fridge} />
+            ))}
         </main>
       </article>
     </section>

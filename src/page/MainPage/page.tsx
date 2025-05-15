@@ -1,4 +1,5 @@
 import NavBar from "../../components/NavBar";
+import { storageType } from "../../types/storage-type";
 import { DropArea } from "./components/DropArea";
 import SpaceSection from "./components/SpaceSection";
 
@@ -16,9 +17,15 @@ function MainPage() {
               먹지 못한 재료들을 드래그 해서 넣어주세요
             </DropArea>
           </div>
-          <SpaceSection className="mt-9">냉동실</SpaceSection>
-          <SpaceSection className="mt-6">냉장실</SpaceSection>
-          <SpaceSection className="mt-6">서랍</SpaceSection>
+          <SpaceSection type={storageType.FROZ} className="mt-9">
+            냉동실
+          </SpaceSection>
+          <SpaceSection type={storageType.REFR} className="mt-6">
+            냉장실
+          </SpaceSection>
+          <SpaceSection type={storageType.DRAW} className="mt-6">
+            서랍
+          </SpaceSection>
         </main>
       </div>
     </>

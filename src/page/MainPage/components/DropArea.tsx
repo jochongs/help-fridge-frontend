@@ -81,7 +81,7 @@ export function DropArea({ children, className = "", icon }: Props) {
       <div
         ref={dropRef as any}
         className={cn(
-          "text-base flex justify-center items-center flex-1 border-dashed border-[#D1D1D1] border-[1px] h-full rounded-xs flex-col gap-2",
+          "text-base flex justify-center items-center flex-1 border-dashed border-[#D1D1D1] border-2 h-full rounded-xs flex-col gap-2",
           isOver ? "bg-[#FAFAFA]" : "",
         )}
       >

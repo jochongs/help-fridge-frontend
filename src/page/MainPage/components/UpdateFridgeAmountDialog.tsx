@@ -118,7 +118,7 @@ export default function UpdateFridgeAmountDialog({
         >
           {success ? (
             <div
-              className="flex flex-col bg-white p-6 h-[320px] w-[334px] rounded-2xl shadow-xl relative px-5 pt-5 py-4 animate-[var(--animate-popin)]"
+              className="flex flex-col bg-white p-6 h-[322px] w-[334px] rounded-2xl shadow-xl relative px-5 pt-5 py-4 animate-[var(--animate-popin)]"
               onClick={(e) => {
                 e.stopPropagation();
               }}

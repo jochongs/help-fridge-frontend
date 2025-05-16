@@ -71,10 +71,6 @@ export default function UpdateFridgeAmountDialog({
   };
 
   const onPressInInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // 왼쪽 화살표를 누르면 0으로 바뀜
-    // 오른쪽 화살표를 누르면 fridge.amount로 바뀜
-    // 아래 화살표를 누르면 1이 줄어듦
-    // 위 화살표를 누르면 1이 늘어남
     if (e.key === "ArrowLeft") {
       setAmountInput(0);
     }

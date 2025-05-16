@@ -28,7 +28,7 @@ export default function UpdateFridgeAmountDialog({
 }: Props) {
   const [amountInput, setAmountInput] = useState(fridge.amount);
 
-  const [success, setSuccess] = useState(true);
+  const [success, setSuccess] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);

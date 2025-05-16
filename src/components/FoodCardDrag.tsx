@@ -1,7 +1,6 @@
 import { useDrag } from "react-dnd";
 import type { FridgeEntity } from "../types/api/fridge/model/fridge";
 import FoodCard from "./FoodCard";
-import { useEffect, useState } from "react";
 
 interface Props {
   fridge: FridgeEntity;
@@ -15,11 +14,6 @@ export default function FoodCardDrag({ fridge }: Props) {
       opacity: monitor.isDragging() ? 0.5 : 1,
     }),
   });
-
-  if (fridge.food.name === "콜라") {
-    console.log("드래그한 음식 이름: " + fridge.food.name);
-    console.log("드래그한 음식 수량: " + fridge.amount);
-  }
 
   return (
     <article

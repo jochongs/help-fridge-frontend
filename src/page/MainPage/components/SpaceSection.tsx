@@ -80,7 +80,7 @@ export default function SpaceSection({
       <article>
         <header className="font-semibold text-2xl select-none flex justify-between items-end">
           <h1>{children}</h1>
-          <AddFridgeButton />
+          <AddFridgeButton type={type} />
         </header>
         <main className="mt-4  h-[300px] overflow-y-scroll pb-4 [&::-webkit-scrollbar]:hidden items-start">
           <div className="grid grid-cols-3 gap-2">

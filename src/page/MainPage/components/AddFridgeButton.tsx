@@ -1,4 +1,11 @@
-export function AddFridgeButton({}) {
+import type { StorageType } from "../../../types/storage-type";
+
+interface Props {
+  className?: string;
+  type: StorageType;
+}
+
+export function AddFridgeButton({}: Props) {
   return (
     <button className="flex gap-1.5 text-lg text-[#818181] items-center font-medium cursor-pointer active:scale-90 transition-all duration-100 ease-in-out">
       <svg

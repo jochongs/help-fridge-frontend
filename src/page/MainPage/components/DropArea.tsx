@@ -77,10 +77,10 @@ export function DropArea({
             : "border-[#FF5D5D]",
         )}
       >
-        <p>{icon}</p>
+        <p className="select-none">{icon}</p>
         <p
           className={cn(
-            "text-base",
+            "text-base select-none",
             type === fridgeHistoryReason.EATEN
               ? "text-[#42A840]"
               : "text-[#FF5D5D]",

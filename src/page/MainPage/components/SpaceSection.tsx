@@ -12,6 +12,7 @@ import { cn } from "../../../util/cn";
 import { useGetFridgeAll } from "../hooks/useGetFridgeAll";
 import { useDrop } from "react-dnd";
 import useUpdateFridgeType from "../hooks/useUpdateFridgeType";
+import { AddFridgeButton } from "./AddFridgeButton";
 
 interface Props extends StrictPropsWithChildren {
   className?: string;
@@ -77,8 +78,9 @@ export default function SpaceSection({
       )}
     >
       <article>
-        <header className="font-semibold text-2xl select-none">
-          {children}
+        <header className="font-semibold text-2xl select-none flex justify-between items-end">
+          <h1>{children}</h1>
+          <AddFridgeButton />
         </header>
         <main className="mt-4  h-[300px] overflow-y-scroll pb-4 [&::-webkit-scrollbar]:hidden items-start">
           <div className="grid grid-cols-3 gap-2">

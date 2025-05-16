@@ -26,6 +26,7 @@ export default function UpdateFridgeAmountDialog({
   const [amountInput, setAmountInput] = useState(fridge.amount);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const { mutate, status: updateStatus } = useUpdateFridgeAmount({
     onSuccess: () => {
@@ -43,6 +44,31 @@ export default function UpdateFridgeAmountDialog({
       inputRef.current.focus();
     }
   }, [isOpen]);
+
+  const buttonSubmitEvent = () => {
+    if (amountInput > fridge.amount) {
+      setAmountInput(fridge.amount);
+      return;
+    }
+
+    if (amountInput <= 0) {
+      if (inputRef.current) {
+        inputRef.current.classList.add("scale-110");
+        inputRef.current.classList.add("bg-red-200");
+        setTimeout(() => {
+          inputRef.current?.classList.remove("scale-110");
+          inputRef.current?.classList.remove("bg-red-200");
+        }, 200);
+      }
+      return;
+    }
+
+    mutate({
+      idx: fridge.idx,
+      amount: amountInput,
+      reasonIdx: type,
+    });
+  };
 
   const onPressInInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // 왼쪽 화살표를 누르면 0으로 바뀜
@@ -68,15 +94,13 @@ export default function UpdateFridgeAmountDialog({
       });
     }
     if (e.key === "Enter") {
-      if (amountInput > fridge.amount) {
-        setAmountInput(fridge.amount);
-        return;
+      if (buttonRef.current) {
+        buttonRef.current.classList.add("scale-95");
+        setTimeout(() => {
+          buttonRef.current?.classList.remove("scale-95");
+        }, 100);
       }
-      mutate({
-        idx: fridge.idx,
-        amount: amountInput,
-        reasonIdx: type,
-      });
+      buttonSubmitEvent();
     }
   };
   return (
@@ -126,14 +150,11 @@ export default function UpdateFridgeAmountDialog({
               </span>
             </div>
             <button
+              ref={buttonRef}
               className="h-12 bg-[#F0F0F0] text-xl font-semibold mt-5 rounded-lg cursor-pointer active:scale-95 transition-all duration-100 hover:bg-[#E0E0E0] text-[#494949]"
               disabled={updateStatus === "pending"}
               onClick={() => {
-                mutate({
-                  idx: fridge.idx,
-                  amount: amountInput,
-                  reasonIdx: type,
-                });
+                buttonSubmitEvent();
               }}
             >
               버리기

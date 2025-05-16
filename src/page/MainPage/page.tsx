@@ -51,13 +51,40 @@ function MainPage() {
               먹지 못한 재료들을 드래그 해서 넣어주세요
             </DropArea>
           </div>
-          <SpaceSection fridgeList={fridgeList1} className="mt-9">
+          <SpaceSection
+            type={storageType.FROZ}
+            fridgeList={fridgeList1}
+            className="mt-9"
+            refetchFridgeList={[
+              refetchRefrFridge,
+              refetchFrozFridge,
+              refetchDrawFridge,
+            ]}
+          >
             냉동실
           </SpaceSection>
-          <SpaceSection fridgeList={fridgeList2} className="mt-6">
+          <SpaceSection
+            type={storageType.REFR}
+            fridgeList={fridgeList2}
+            className="mt-6"
+            refetchFridgeList={[
+              refetchRefrFridge,
+              refetchFrozFridge,
+              refetchDrawFridge,
+            ]}
+          >
             냉장실
           </SpaceSection>
-          <SpaceSection fridgeList={fridgeList3} className="mt-6">
+          <SpaceSection
+            type={storageType.DRAW}
+            fridgeList={fridgeList3}
+            className="mt-6"
+            refetchFridgeList={[
+              refetchRefrFridge,
+              refetchFrozFridge,
+              refetchDrawFridge,
+            ]}
+          >
             서랍
           </SpaceSection>
         </main>

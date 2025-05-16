@@ -27,6 +27,7 @@ export const useGetFridgeAll = (type: StorageType) => {
     staleTime: 0,
     retry: 0,
     gcTime: 0,
+    placeholderData: (previousData, previousQuery) => previousData,
   });
 
   useEffect(() => {

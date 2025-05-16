@@ -34,7 +34,7 @@ const foodData: FoodEntity = {
   expiration: 7,
 };
 
-export const fridge: FridgeEntity = {
+export const fridgeMockingData: FridgeEntity = {
   idx: 1,
   storage: storageType.FROZ,
   food: foodData,

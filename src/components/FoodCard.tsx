@@ -62,7 +62,9 @@ export default function FoodCard({ fridge }: Props) {
   return (
     <div>
       <header className="flex">
-        <h3 className="text-xl font-semibold mr-2">{fridge.food.name}</h3>
+        <h3 className="text-xl font-semibold mr-2">
+          {fridge.idx + fridge.food.name}
+        </h3>
         <Chip type={color} className="mr-0.5">
           {diffDays < 0 ? "유통기한 만료" : `D-${diffDays}`}
         </Chip>

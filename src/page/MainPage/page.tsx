@@ -31,7 +31,7 @@ function MainPage() {
             그림자: shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]
             그림자: shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]
           */}
-          <div className="sticky px-7.5 w-full top-[72px] z-50 flex gap-8">
+          <div className="sticky w-full top-[72px] z-50 flex gap-8">
             <DropArea
               refetchDrawFridge={refetchDrawFridge}
               refetchFrozFridge={refetchFrozFridge}

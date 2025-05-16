@@ -27,7 +27,6 @@ export const useGetFridgeAll = (type: StorageType) => {
     staleTime: 0,
     retry: 0,
     gcTime: 0,
-    // 이거 캐싱 안되게 하는거
   });
 
   useEffect(() => {

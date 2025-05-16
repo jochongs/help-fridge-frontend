@@ -3,7 +3,10 @@ import type { StrictPropsWithChildren } from "../../../types/react";
 import { cn } from "../../../util/cn";
 import { overlay } from "overlay-kit";
 import type { FridgeEntity } from "../../../types/api/fridge/model/fridge";
-import type { FridgeHistoryReason } from "../../../types/fridge-history-type";
+import {
+  fridgeHistoryReason,
+  type FridgeHistoryReason,
+} from "../../../types/fridge-history-type";
 import UpdateFridgeAmountDialog from "./UpdateFridgeAmountDialog";
 import { storageType } from "../../../types/storage-type";
 
@@ -56,17 +59,35 @@ export function DropArea({
 
   return (
     <div
-      className={cn("bg-white p-2.5 h-[106px] flex-1 rounded-lg", className)}
+      className={cn(
+        "shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-2.5 h-[106px] flex-1 rounded-lg transition-all duration-100",
+        type === fridgeHistoryReason.EATEN
+          ? "bg-[#D5F3D5] text-[#42A840]"
+          : "bg-[#FFE8E8] text-[#FF5D5D]",
+        isOver ? "scale-90" : "",
+        className,
+      )}
     >
       <div
         ref={dropRef as any}
         className={cn(
-          "text-base flex justify-center items-center flex-1 border-dashed border-[#D1D1D1] border-2 h-full rounded-xs flex-col gap-2",
-          isOver ? "bg-[#FAFAFA]" : "",
+          "text-base flex justify-center items-center flex-1 border-dashed border-2 h-full rounded-xs flex-col gap-2",
+          type === fridgeHistoryReason.EATEN
+            ? "border-[#42A840]"
+            : "border-[#FF5D5D]",
         )}
       >
         <p>{icon}</p>
-        <p className="text-base text-[#969696]">{children}</p>
+        <p
+          className={cn(
+            "text-base",
+            type === fridgeHistoryReason.EATEN
+              ? "text-[#42A840]"
+              : "text-[#FF5D5D]",
+          )}
+        >
+          {children}
+        </p>
       </div>
     </div>
   );

@@ -25,8 +25,13 @@ function MainPage() {
     <>
       <NavBar />
       <div className="bg-[#F5F5F5]">
-        <main className="max-w-[930px] w-full flex mx-auto px-7.5 flex-col pb-6">
-          <div className="flex gap-8.5 mt-6">
+        <main className="relative max-w-[930px] w-full flex mx-auto px-7.5 flex-col pb-6">
+          {/* 그림자 테일윈드: 
+            shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] 
+            그림자: shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]
+            그림자: shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]
+          */}
+          <div className="sticky px-7.5 w-full top-[72px] z-50 flex gap-8">
             <DropArea
               refetchDrawFridge={refetchDrawFridge}
               refetchFrozFridge={refetchFrozFridge}

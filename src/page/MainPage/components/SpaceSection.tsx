@@ -70,7 +70,11 @@ export default function SpaceSection({
   return (
     <section
       ref={dropRef as any}
-      className={cn("p-4 pb-0 rounded-lg bg-white w-full", className)}
+      className={cn(
+        "p-4 pb-0 rounded-lg bg-white w-full transition-all duration-100 ease-in-out",
+        className,
+        dropFridge ? "scale-[101%]" : "",
+      )}
     >
       <article>
         <header className="font-semibold text-2xl">{children}</header>

@@ -4,7 +4,7 @@ import {
   fridgeHistoryReason,
   type FridgeHistoryReason,
 } from "../../../types/fridge-history-type";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useUpdateFridgeAmount from "../hooks/useUpdateFridgeAmount";
 import { cn } from "../../../util/cn";
 
@@ -25,6 +25,8 @@ export default function UpdateFridgeAmountDialog({
 }: Props) {
   const [amountInput, setAmountInput] = useState(fridge.amount);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const { mutate, status: updateStatus } = useUpdateFridgeAmount({
     onSuccess: () => {
       onSuccess && onSuccess();
@@ -36,6 +38,47 @@ export default function UpdateFridgeAmountDialog({
     onClose();
   };
 
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
+
+  const onPressInInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // 왼쪽 화살표를 누르면 0으로 바뀜
+    // 오른쪽 화살표를 누르면 fridge.amount로 바뀜
+    // 아래 화살표를 누르면 1이 줄어듦
+    // 위 화살표를 누르면 1이 늘어남
+    if (e.key === "ArrowLeft") {
+      setAmountInput(0);
+    }
+    if (e.key === "ArrowRight") {
+      setAmountInput(fridge.amount);
+    }
+    if (e.key === "ArrowDown") {
+      setAmountInput((prev) => {
+        if (prev === 0) return 0;
+        return prev - 1;
+      });
+    }
+    if (e.key === "ArrowUp") {
+      setAmountInput((prev) => {
+        if (prev === fridge.amount) return fridge.amount;
+        return prev + 1;
+      });
+    }
+    if (e.key === "Enter") {
+      if (amountInput > fridge.amount) {
+        setAmountInput(fridge.amount);
+        return;
+      }
+      mutate({
+        idx: fridge.idx,
+        amount: amountInput,
+        reasonIdx: type,
+      });
+    }
+  };
   return (
     <>
       {isOpen ? (
@@ -62,8 +105,10 @@ export default function UpdateFridgeAmountDialog({
             <div className="border-[1.5px] border-[#F2F2F2] my-3"></div>
             <div className="flex items-center-safe">
               <input
+                onKeyDown={onPressInInput}
+                ref={inputRef}
                 type="text"
-                className="w-8.5 h-8.5 text-xl rounded-sm bg-[#F0F0F0] mr-1.5 text-[#494949] flex justify-center items-center text-center focus:outline-none"
+                className="caret-transparent w-8.5 h-8.5 text-xl rounded-sm bg-[#F0F0F0] mr-1.5 text-[#494949] flex justify-center items-center text-center focus:outline-none"
                 value={amountInput}
                 onChange={(e) => {
                   const value = e.target.value;

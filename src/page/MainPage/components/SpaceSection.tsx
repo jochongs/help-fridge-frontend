@@ -20,6 +20,10 @@ export default function SpaceSection({
   children,
   fridgeList,
 }: Props) {
+  if (typeof fridgeList === "string") {
+    fridgeList = [fridge];
+  }
+
   return (
     <section className={cn("p-4 pb-0 rounded-lg bg-white w-full", className)}>
       <article>

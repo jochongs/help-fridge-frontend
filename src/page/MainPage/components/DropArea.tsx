@@ -32,6 +32,8 @@ export function DropArea({
     accept: "FOOD",
     drop: async (item: { fridge: FridgeEntity }) => {
       const fridge = item.fridge;
+      console.log("음식 이름: " + fridge.food.name);
+      console.log("음식 수량: " + fridge.amount);
       await overlay.openAsync((props) => (
         <UpdateFridgeAmountDialog
           {...props}

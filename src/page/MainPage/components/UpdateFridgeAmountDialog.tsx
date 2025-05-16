@@ -122,7 +122,7 @@ export default function UpdateFridgeAmountDialog({
             <article className="w-[294px] px-4 py-2.5 rounded-lg border-2 border-[#F2F2F2] mt-3">
               <FoodCard fridge={fridge} />
             </article>
-            <div className="border-[1.5px] border-[#F2F2F2] my-3"></div>
+            <div className="border-[1px] border-[#F2F2F2] my-3"></div>
             <div className="flex items-center-safe">
               <input
                 onKeyDown={onPressInInput}
@@ -142,7 +142,8 @@ export default function UpdateFridgeAmountDialog({
                 }}
               />
               <span className="text-xl text-[##494949]">
-                {fridge.unit.name} 버릴래요.
+                {fridge.unit.name}{" "}
+                {type === fridgeHistoryReason.EATEN ? `먹었어요.` : `버릴래요.`}
               </span>
             </div>
             <button

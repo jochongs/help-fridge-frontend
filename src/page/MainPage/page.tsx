@@ -24,7 +24,7 @@ function MainPage() {
   return (
     <>
       <NavBar />
-      <div className="bg-[#F5F5F5]">
+      <div className="bg-[#F5F5F5] min-h-[100vh]">
         <main className="relative max-w-[930px] w-full flex mx-auto px-7.5 flex-col pb-6">
           {/* 그림자 테일윈드: 
             shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] 

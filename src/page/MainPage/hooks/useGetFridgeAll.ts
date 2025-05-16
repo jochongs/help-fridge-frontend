@@ -1,18 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axiosInstance from "../../../util/axiosInstance";
 import type { StorageType } from "../../../types/storage-type";
 import type { FridgeEntity } from "../../../types/api/fridge/model/fridge";
+import type { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const useGetFridgeAll = (type: StorageType) => {
   const [flag, setFlag] = useState(false);
+
+  const navigate = useNavigate();
 
   const rerender = () => {
     setFlag((prev) => !prev);
   };
 
-  const query = useQuery({
-    queryKey: ["fridge-"],
+  const query = useQuery<FridgeEntity[], AxiosError>({
+    queryKey: [`fridge-all-${flag}-${type}`],
     async queryFn() {
       const response = await axiosInstance.get<FridgeEntity[]>(
         "/v2/fridge?type=" + type,
@@ -21,9 +25,26 @@ export const useGetFridgeAll = (type: StorageType) => {
       return response.data;
     },
     staleTime: 0,
+    retry: 0,
+    gcTime: 0,
+    // 이거 캐싱 안되게 하는거
   });
+
+  useEffect(() => {
+    if (!query.isError || !query.error) return;
+
+    const status = query.error.response?.status;
+
+    if (status === 401) {
+      navigate("/login");
+      return;
+    }
+
+    alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+  }, [query.isError, query.error]);
 
   return {
     query,
+    rerender,
   };
 };

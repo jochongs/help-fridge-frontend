@@ -1,7 +1,10 @@
 import FoodCard from "../../../components/FoodCard";
 import FoodCardDrag from "../../../components/FoodCardDrag";
 import type { FoodEntity } from "../../../types/api/food/model/food";
-import { fridge } from "../../../types/api/fridge/model/fridge";
+import {
+  fridge,
+  type FridgeEntity,
+} from "../../../types/api/fridge/model/fridge";
 import type { StrictPropsWithChildren } from "../../../types/react";
 import { storageType, type StorageType } from "../../../types/storage-type";
 import { cn } from "../../../util/cn";
@@ -9,18 +12,14 @@ import { useGetFridgeAll } from "../hooks/useGetFridgeAll";
 
 interface Props extends StrictPropsWithChildren {
   className?: string;
-  type: StorageType;
+  fridgeList?: FridgeEntity[];
 }
 
 export default function SpaceSection({
   className = "",
   children,
-  type,
+  fridgeList,
 }: Props) {
-  const {
-    query: { data: fridgeList },
-  } = useGetFridgeAll(type);
-
   return (
     <section className={cn("p-4 pb-0 rounded-lg bg-white w-full", className)}>
       <article>

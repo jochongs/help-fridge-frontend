@@ -1,4 +1,6 @@
+import { overlay } from "overlay-kit";
 import type { StorageType } from "../../../types/storage-type";
+import AddFridgeDialog from "./AddFridgeDialog";
 
 interface Props {
   className?: string;
@@ -6,8 +8,22 @@ interface Props {
 }
 
 export function AddFridgeButton({}: Props) {
+  const buttonClickHandler = async () => {
+    await overlay.openAsync((props) => (
+      <AddFridgeDialog
+        onClose={() => {
+          overlay.close(props.overlayId);
+        }}
+        isOpen={props.isOpen}
+      />
+    ));
+  };
+
   return (
-    <button className="flex gap-1.5 text-lg text-[#818181] items-center font-medium cursor-pointer active:scale-90 transition-all duration-100 ease-in-out">
+    <button
+      className="flex gap-1.5 text-lg text-[#818181] items-center font-medium cursor-pointer active:scale-90 transition-all duration-100 ease-in-out"
+      onClick={buttonClickHandler}
+    >
       <svg
         width="20"
         height="20"

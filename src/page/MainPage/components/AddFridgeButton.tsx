@@ -5,9 +5,10 @@ import AddFridgeDialog from "./AddFridgeDialog";
 interface Props {
   className?: string;
   type: StorageType;
+  onSuccess: () => void;
 }
 
-export function AddFridgeButton({}: Props) {
+export function AddFridgeButton({ type, onSuccess }: Props) {
   const buttonClickHandler = async () => {
     await overlay.openAsync((props) => (
       <AddFridgeDialog
@@ -15,6 +16,8 @@ export function AddFridgeButton({}: Props) {
           overlay.close(props.overlayId);
         }}
         isOpen={props.isOpen}
+        type={type}
+        afterSuccess={onSuccess}
       />
     ));
   };

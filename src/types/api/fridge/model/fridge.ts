@@ -10,8 +10,8 @@ export interface FridgeEntity {
   unit: UnitEntity;
   user: Pick<UserEntity, "idx">;
   amount: number;
-  createdAt: Date;
-  expiredAt: Date | null;
+  createdAt: string;
+  expiredAt: string | null;
 }
 
 const foodData: FoodEntity = {
@@ -46,6 +46,6 @@ export const fridgeMockingData: FridgeEntity = {
     idx: 1,
   },
   amount: 5,
-  createdAt: new Date(),
+  createdAt: new Date().toISOString(),
   expiredAt: null,
 };

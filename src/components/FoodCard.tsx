@@ -44,7 +44,10 @@ export default function FoodCard({ fridge }: Props) {
   };
 
   const diffDays = subExpiredAt(
-    calculateExpirationDate(fridge.expiredAt, fridge.food.expiration),
+    calculateExpirationDate(
+      fridge.expiredAt ? new Date(fridge.expiredAt) : null,
+      fridge.food.expiration,
+    ),
   );
 
   const calculateColor = (diffDays: number) => {
@@ -75,7 +78,10 @@ export default function FoodCard({ fridge }: Props) {
         <p className="text-[#969696] text-base font-normal mt-1.5">
           소비 기한:{" "}
           {formatDate(
-            calculateExpirationDate(fridge.expiredAt, fridge.food.expiration),
+            calculateExpirationDate(
+              fridge.expiredAt ? new Date(fridge.expiredAt) : null,
+              fridge.food.expiration,
+            ),
           )}
         </p>
       </main>

@@ -21,7 +21,6 @@ export const useGetFridgeAll = (type: StorageType) => {
       const response = await axiosInstance.get<FridgeEntity[]>(
         "/v2/fridge?type=" + type,
       );
-
       return response.data;
     },
     staleTime: 0,

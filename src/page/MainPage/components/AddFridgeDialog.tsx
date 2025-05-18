@@ -30,7 +30,7 @@ export default function AddFridgeDialog({
   const closeDialog = () => {
     onClose();
   };
-  const foodNameInput = useRef<HTMLInputElement>(null);
+  const foodNameInputRef = useRef<HTMLInputElement>(null);
   const [finish, setFinish] = useState(false);
 
   const [foodSearchInput, setFoodSearchInput] = useState<string>("");
@@ -42,6 +42,8 @@ export default function AddFridgeDialog({
   const [amount, setAmount] = useState<number>(0);
   const [insertDate, setInsertDate] = useState<Date | undefined>(new Date());
   const [expirationDate, setExpirationDate] = useState<Date>();
+
+  const [isFoodSearchInputFocus, setIsFoodSearchInputFocus] = useState(false);
 
   const [insertDateInput, setInsertDateInput] = useState<string>(
     insertDate
@@ -212,8 +214,10 @@ export default function AddFridgeDialog({
   };
 
   // 음식 선택 이벤트
-  const foodButtonClickHandle = (food: FoodEntity) => () =>
+  const foodButtonClickHandle = (food: FoodEntity) => () => {
     setSelectedFood(food);
+    setIsFoodSearchInputFocus(false);
+  };
 
   const unitClickHandle = (unit: UnitEntity) => () => {
     setSelectedUnit(unit);
@@ -223,12 +227,12 @@ export default function AddFridgeDialog({
   // 단위 선택 이벤트
   const unitInputButtonClickHandle = () => {
     if (!selectedFood) {
-      if (foodNameInput.current) {
-        foodNameInput.current.classList.add("scale-105");
-        foodNameInput.current.classList.add("bg-red-50");
+      if (foodNameInputRef.current) {
+        foodNameInputRef.current.classList.add("scale-105");
+        foodNameInputRef.current.classList.add("bg-red-50");
         setTimeout(() => {
-          foodNameInput.current?.classList.remove("scale-105");
-          foodNameInput.current?.classList.remove("bg-red-50");
+          foodNameInputRef.current?.classList.remove("scale-105");
+          foodNameInputRef.current?.classList.remove("bg-red-50");
         }, 200);
       }
 
@@ -268,7 +272,7 @@ export default function AddFridgeDialog({
         !containerRef.current.contains(e.target as Node)
       ) {
         if (!selectedFood) {
-          setFoodSearchInput(""); // 또는 searchResult 닫는 처리
+          setIsFoodSearchInputFocus(false);
         }
       }
     };
@@ -339,12 +343,13 @@ export default function AddFridgeDialog({
                     </label>
                     <div ref={containerRef}>
                       <input
-                        ref={foodNameInput}
+                        ref={foodNameInputRef}
                         type="text"
                         id="food_name"
                         autoComplete="off"
                         onChange={changeFoodNameHandle}
                         value={selectedFood?.name || foodSearchInput}
+                        onFocus={() => setIsFoodSearchInputFocus(true)}
                         className={cn(
                           `w-full h-[46px] pl-2.5
                         focus:outline-none
@@ -356,10 +361,9 @@ export default function AddFridgeDialog({
                         )}
                         placeholder="검색어를 입력해주세요."
                       />
-                      {foodSearchInput &&
-                        searchResult &&
-                        !selectedFood &&
-                        searchResult.map((food, i) => (
+                      {
+                        // 검색 결과가 있으면
+                        isFoodSearchInputFocus && (
                           <div
                             className="mt-2 w-full rounded-lg absolute h-[187px] 
                                 white z-51
@@ -367,28 +371,31 @@ export default function AddFridgeDialog({
                                 border-[1px] border-[#F0F0F0] overflow-y-scroll
                                 [&::-webkit-scrollbar]:hidden"
                           >
-                            <div
-                              key={`food-search-result-${i}`}
-                              className="h-[46px] relative cursor-pointer
+                            {(searchResult || []).map((food, i) => (
+                              <div
+                                key={`food-search-result-${i}`}
+                                className="h-[46px] relative cursor-pointer
                                     flex items-center justify-center
                                     hover:bg-[#F7F7F7]
                                     text-[#585858] text-[18px] font-normal"
-                            >
-                              <button
-                                type="button"
-                                className="w-full h-full cursor-pointer text-left pl-2.5"
-                                onClick={foodButtonClickHandle(food)}
                               >
-                                {food.name}
-                              </button>
-                              <div
-                                className="w-[394px] h-[1px] 
+                                <button
+                                  type="button"
+                                  className="w-full h-full cursor-pointer text-left pl-2.5"
+                                  onClick={foodButtonClickHandle(food)}
+                                >
+                                  {food.name}
+                                </button>
+                                <div
+                                  className="w-[394px] h-[1px] 
                                         absolute bottom-[-2px]
                                         bg-[#F0F0F0]"
-                              ></div>
-                            </div>
+                                ></div>
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                        )
+                      }
                     </div>
                   </div>
                   {/* 단위 */}

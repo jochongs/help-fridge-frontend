@@ -35,7 +35,6 @@ export const useSearchFood = (name: string) => {
     retry: 0,
     gcTime: 0,
     placeholderData: (previousData, previousQuery) => previousData,
-    enabled: !!name,
   });
 
   useEffect(() => {

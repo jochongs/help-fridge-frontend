@@ -11,6 +11,8 @@ import { useSearchFood } from "../hooks/useSearchFood";
 import useAddFridge from "../hooks/useAddFridge";
 import type { StorageType } from "../../../types/storage-type";
 import LoadingSpinner from "../../../icon/LoadingSpinner";
+import Lottie from "react-lottie";
+import AddFridgeSuccessJson from "../../../lottie/add-fridge-success.json";
 
 interface Props {
   onClose: () => void;
@@ -29,6 +31,7 @@ export default function AddFridgeDialog({
     onClose();
   };
   const foodNameInput = useRef<HTMLInputElement>(null);
+  const [finish, setFinish] = useState(false);
 
   const [foodSearchInput, setFoodSearchInput] = useState<string>("");
 
@@ -57,6 +60,7 @@ export default function AddFridgeDialog({
   const { mutate, status: submitStatus } = useAddFridge({
     onSuccess: () => {
       afterSuccess(type);
+      setFinish(true);
     },
   });
 
@@ -293,156 +297,182 @@ export default function AddFridgeDialog({
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
           onClick={closeDialog}
         >
-          <article
-            className="w-[440px] rounded-[20px]
+          {finish ? (
+            <article
+              className="w-[440px] rounded-[20px] h-[528px]
+              bg-white
+            flex justify-center items-center"
+            >
+              <Lottie
+                options={{
+                  loop: false,
+                  autoplay: true,
+                  animationData: AddFridgeSuccessJson,
+                }}
+                speed={1.5}
+                height={271}
+                isClickToPauseDisabled={true}
+                eventListeners={[
+                  {
+                    eventName: "complete",
+                    callback: () => {
+                      onClose();
+                    },
+                  },
+                ]}
+              />
+            </article>
+          ) : (
+            <article
+              className="w-[440px] rounded-[20px] h-[528px]
             animate-[var(--animate-popin)] p-5 bg-white
             flex flex-col text-xl font-semibold"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div>
-              <h3 className="">추가할 음식 정보를 알려주세요.</h3>
-              <form className="mt-3" onSubmit={submitHandle}>
-                {/* 음식 이름 */}
-                <div className="relative">
-                  <label className="text-xl font-medium text-[#585858] w-fit">
-                    음식 이름
-                  </label>
-                  <div ref={containerRef}>
-                    <input
-                      ref={foodNameInput}
-                      type="text"
-                      id="food_name"
-                      autoComplete="off"
-                      onChange={changeFoodNameHandle}
-                      value={selectedFood?.name || foodSearchInput}
-                      className={cn(
-                        `w-full h-[46px] pl-2.5
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div>
+                <h3 className="">추가할 음식 정보를 알려주세요.</h3>
+                <form className="mt-3" onSubmit={submitHandle}>
+                  {/* 음식 이름 */}
+                  <div className="relative">
+                    <label className="text-xl font-medium text-[#585858] w-fit">
+                      음식 이름
+                    </label>
+                    <div ref={containerRef}>
+                      <input
+                        ref={foodNameInput}
+                        type="text"
+                        id="food_name"
+                        autoComplete="off"
+                        onChange={changeFoodNameHandle}
+                        value={selectedFood?.name || foodSearchInput}
+                        className={cn(
+                          `w-full h-[46px] pl-2.5
                         focus:outline-none
                         text-[#585858] text-lg font-normal
                         rounded-lg mt-3 
                         placeholder:text-[#B7B7B7]
                         transition-all duration-100`,
-                        selectedFood ? "bg-blue-50" : "bg-[#F7F7F7]",
-                      )}
-                      placeholder="검색어를 입력해주세요."
-                    />
-                    {foodSearchInput &&
-                      searchResult &&
-                      !selectedFood &&
-                      searchResult.map((food, i) => (
-                        <div
-                          className="mt-2 w-full rounded-lg absolute h-[187px] 
+                          selectedFood ? "bg-blue-50" : "bg-[#F7F7F7]",
+                        )}
+                        placeholder="검색어를 입력해주세요."
+                      />
+                      {foodSearchInput &&
+                        searchResult &&
+                        !selectedFood &&
+                        searchResult.map((food, i) => (
+                          <div
+                            className="mt-2 w-full rounded-lg absolute h-[187px] 
                                 white z-51
                                 bg-white
                                 border-[1px] border-[#F0F0F0] overflow-y-scroll
                                 [&::-webkit-scrollbar]:hidden"
-                        >
-                          <div
-                            key={`food-search-result-${i}`}
-                            className="h-[46px] relative cursor-pointer
+                          >
+                            <div
+                              key={`food-search-result-${i}`}
+                              className="h-[46px] relative cursor-pointer
                                     flex items-center justify-center
                                     hover:bg-[#F7F7F7]
                                     text-[#585858] text-[18px] font-normal"
-                          >
-                            <button
-                              type="button"
-                              className="w-full h-full cursor-pointer text-left pl-2.5"
-                              onClick={foodButtonClickHandle(food)}
                             >
-                              {food.name}
-                            </button>
-                            <div
-                              className="w-[394px] h-[1px] 
+                              <button
+                                type="button"
+                                className="w-full h-full cursor-pointer text-left pl-2.5"
+                                onClick={foodButtonClickHandle(food)}
+                              >
+                                {food.name}
+                              </button>
+                              <div
+                                className="w-[394px] h-[1px] 
                                         absolute bottom-[-2px]
                                         bg-[#F0F0F0]"
-                            ></div>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-                {/* 단위 */}
-                <div className="relative mt-3">
-                  <label className="text-xl font-medium text-[#585858]">
-                    단위
-                  </label>
-                  <div>
-                    <button
-                      id="food_name"
-                      type="button"
-                      className={cn(
-                        `w-full h-[46px] pl-2.5 text-left
-                            text-[#585858] text-lg font-normal
-                            rounded-lg mt-3 bg-[#F7F7F7]
-                            placeholder:text-[#B7B7B7] cursor-pointer`,
-                        selectedUnit
-                          ? "text-[#585858] bg-blue-50"
-                          : "text-[#B7B7B7]",
-                      )}
-                      onClick={unitInputButtonClickHandle}
-                    >
-                      {selectedUnit
-                        ? selectedUnit.name
-                        : "단위를 선택해주세요."}
-                      <div className="absolute right-2.5 bottom-3">
-                        <ArrowDown />
-                      </div>
-                    </button>
-                  </div>
-
-                  {isUnitOpen && (
-                    <div
-                      className="w-full h-[187px] rounded-lg mt-2 overflow-y-scroll 
-                                absolute bg-white z-1
-                                border-[1px] border-[#F0F0F0] 
-                                [&::-webkit-scrollbar]:hidden"
-                    >
-                      {selectedFood &&
-                        selectedFood.unit.map((unit, i) => (
-                          <div
-                            key={`food-search-result-${i}`}
-                            className="h-[46px] relative cursor-pointer
-                                    flex items-center justify-center
-                                    hover:bg-[#F7F7F7]
-                                    text-[#585858] text-[18px] font-normal"
-                          >
-                            <button
-                              type="button"
-                              className="cursor-pointer w-full h-full text-left pl-2.5"
-                              onClick={unitClickHandle(unit)}
-                            >
-                              {unit.name}
-                            </button>
-                            <div
-                              className="w-[394px] h-[1px] 
-                                        absolute bottom-[-2px]
-                                        bg-[#F0F0F0]"
-                            ></div>
+                              ></div>
+                            </div>
                           </div>
                         ))}
                     </div>
-                  )}
-                </div>
-                {/* 수량 */}
-                <div className="relative mt-3">
-                  <label className="text-xl font-medium text-[#585858]">
-                    수량
-                  </label>
-                  <input
-                    type="text"
-                    autoComplete="off"
-                    value={amount}
-                    onChange={amountInputHandle}
-                    className="w-full h-[46px] pl-2.5
+                  </div>
+                  {/* 단위 */}
+                  <div className="relative mt-3">
+                    <label className="text-xl font-medium text-[#585858]">
+                      단위
+                    </label>
+                    <div>
+                      <button
+                        id="food_name"
+                        type="button"
+                        className={cn(
+                          `w-full h-[46px] pl-2.5 text-left
+                            text-[#585858] text-lg font-normal
+                            rounded-lg mt-3 bg-[#F7F7F7]
+                            placeholder:text-[#B7B7B7] cursor-pointer`,
+                          selectedUnit
+                            ? "text-[#585858] bg-blue-50"
+                            : "text-[#B7B7B7]",
+                        )}
+                        onClick={unitInputButtonClickHandle}
+                      >
+                        {selectedUnit
+                          ? selectedUnit.name
+                          : "단위를 선택해주세요."}
+                        <div className="absolute right-2.5 bottom-3">
+                          <ArrowDown />
+                        </div>
+                      </button>
+                    </div>
+
+                    {isUnitOpen && (
+                      <div
+                        className="w-full h-[187px] rounded-lg mt-2 overflow-y-scroll 
+                                absolute bg-white z-1
+                                border-[1px] border-[#F0F0F0] 
+                                [&::-webkit-scrollbar]:hidden"
+                      >
+                        {selectedFood &&
+                          selectedFood.unit.map((unit, i) => (
+                            <div
+                              key={`food-search-result-${i}`}
+                              className="h-[46px] relative cursor-pointer
+                                    flex items-center justify-center
+                                    hover:bg-[#F7F7F7]
+                                    text-[#585858] text-[18px] font-normal"
+                            >
+                              <button
+                                type="button"
+                                className="cursor-pointer w-full h-full text-left pl-2.5"
+                                onClick={unitClickHandle(unit)}
+                              >
+                                {unit.name}
+                              </button>
+                              <div
+                                className="w-[394px] h-[1px] 
+                                        absolute bottom-[-2px]
+                                        bg-[#F0F0F0]"
+                              ></div>
+                            </div>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+                  {/* 수량 */}
+                  <div className="relative mt-3">
+                    <label className="text-xl font-medium text-[#585858]">
+                      수량
+                    </label>
+                    <input
+                      type="text"
+                      autoComplete="off"
+                      value={amount}
+                      onChange={amountInputHandle}
+                      className="w-full h-[46px] pl-2.5
                             focus:outline-none
                             text-[#585858] text-lg font-normal
                             rounded-lg mt-3 bg-[#F7F7F7]
                             placeholder:text-[#B7B7B7]"
-                    placeholder="양을 입력해주세요."
-                  />
-                </div>
-                {/* 넣은 날짜 */}
-                {/* <div className="relative mt-3">
+                      placeholder="양을 입력해주세요."
+                    />
+                  </div>
+                  {/* 넣은 날짜 */}
+                  {/* <div className="relative mt-3">
                   <label className="text-xl font-medium text-[#585858]">
                     넣은 날짜
                   </label>
@@ -477,67 +507,68 @@ export default function AddFridgeDialog({
                     onKeyDown={insertDateKeyDownHandle}
                   />
                 </div> */}
-                {/* 소비기한 */}
-                <div className="relative mt-3">
-                  <label className="text-xl font-medium text-[#585858]">
-                    소비기한
-                  </label>
-                  <input
-                    type="text"
-                    id="food_name"
-                    autoComplete="off"
-                    value={
-                      expirationDate
-                        ? `${expirationDate.getFullYear()}-${(
-                            expirationDate.getMonth() + 1
-                          )
-                            .toString()
-                            .padStart(2, "0")}-${expirationDate
-                            .getDate()
-                            .toString()
-                            .padStart(2, "0")}`
-                        : expirationDateInput
-                    }
-                    ref={expirationDateInputRef}
-                    onBlur={expirationDateBlurHandle}
-                    onKeyDown={expirationDateKeyDownHandle}
-                    onChange={changeExpirationDateHandle}
-                    className={cn(
-                      `w-full h-[46px] pl-2.5
+                  {/* 소비기한 */}
+                  <div className="relative mt-3">
+                    <label className="text-xl font-medium text-[#585858]">
+                      소비기한
+                    </label>
+                    <input
+                      type="text"
+                      id="food_name"
+                      autoComplete="off"
+                      value={
+                        expirationDate
+                          ? `${expirationDate.getFullYear()}-${(
+                              expirationDate.getMonth() + 1
+                            )
+                              .toString()
+                              .padStart(2, "0")}-${expirationDate
+                              .getDate()
+                              .toString()
+                              .padStart(2, "0")}`
+                          : expirationDateInput
+                      }
+                      ref={expirationDateInputRef}
+                      onBlur={expirationDateBlurHandle}
+                      onKeyDown={expirationDateKeyDownHandle}
+                      onChange={changeExpirationDateHandle}
+                      className={cn(
+                        `w-full h-[46px] pl-2.5
                         focus:outline-none
                         text-[#585858] text-lg font-normal
                         rounded-lg mt-3 bg-[#F7F7F7]
                         transition-all duration-100
                         placeholder:text-[#B7B7B7]`,
-                      expirationDate ? "bg-blue-50" : "",
-                    )}
-                    placeholder="음식의 소비 기한을 선택해주세요."
-                  />
-                </div>
-                {/* 추가하기 버튼 */}
-                <div>
-                  <button
-                    type="submit"
-                    disabled={!isSubmitAble()}
-                    className={cn(
-                      `w-full h-12 mt-5 cursor-pointer
+                        expirationDate ? "bg-blue-50" : "",
+                      )}
+                      placeholder="음식의 소비 기한을 선택해주세요."
+                    />
+                  </div>
+                  {/* 추가하기 버튼 */}
+                  <div>
+                    <button
+                      type="submit"
+                      disabled={!isSubmitAble()}
+                      className={cn(
+                        `w-full h-12 mt-5 cursor-pointer
                       active:scale-95 transition-all duration-100
                       text-white text-xl font-semibold
                       flex items-center justify-center
                       rounded-lg`,
-                      isSubmitAble() ? "bg-[#5097E0]" : "bg-[#D1D1D1]",
-                    )}
-                  >
-                    {submitStatus === "pending" ? (
-                      <LoadingSpinner />
-                    ) : (
-                      "추가하기"
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </article>
+                        isSubmitAble() ? "bg-[#5097E0]" : "bg-[#D1D1D1]",
+                      )}
+                    >
+                      {submitStatus === "pending" ? (
+                        <LoadingSpinner />
+                      ) : (
+                        "추가하기"
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </article>
+          )}
         </div>
       ) : null}
     </>

@@ -22,8 +22,8 @@ export default function useAddFridge({ onSuccess }: Options) {
 
   return useMutation({
     mutationFn: async (dto: AddFridgeDTO) => {
-      await wait(1000);
-      await axiosInstance.post("/fridge/v2", {
+      await wait(300);
+      await axiosInstance.post("/v2/fridge", {
         foodIdx: dto.foodIdx,
         unitIdx: dto.unitIdx,
         storage: dto.storage,

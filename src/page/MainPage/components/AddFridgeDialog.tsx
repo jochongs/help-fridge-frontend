@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   foodMockingData,
   foodMockingData2,
@@ -7,6 +7,7 @@ import {
 import ArrowDown from "../../../icon/ArrowDown";
 import { cn } from "../../../util/cn";
 import type { UnitEntity } from "../../../types/api/unit/model/unit";
+import { useSearchFood } from "../hooks/useSearchFood";
 
 interface Props {
   onClose: () => void;
@@ -17,28 +18,221 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
   const closeDialog = () => {
     onClose();
   };
+  const foodNameInput = useRef<HTMLInputElement>(null);
 
-  const [searchResult, setSearchResult] = useState<FoodEntity[] | undefined>();
-  //     [
-  //     foodMockingData,
-  //     foodMockingData2,
-  //     foodMockingData,
-  //     foodMockingData2,
-  //     foodMockingData,
-  //     foodMockingData2,
-  //     foodMockingData,
-  //     foodMockingData2,
-  //   ]
+  const [foodSearchInput, setFoodSearchInput] = useState<string>("");
 
-  const [selectedFood, setSelectedFood] = useState<FoodEntity | undefined>(
-    foodMockingData,
-  );
+  const { data: searchResult } = useSearchFood(foodSearchInput);
+
+  const [selectedFood, setSelectedFood] = useState<FoodEntity | undefined>();
   const [selectedUnit, setSelectedUnit] = useState<UnitEntity | undefined>();
+  const [amount, setAmount] = useState<number>(0);
+  const [insertDate, setInsertDate] = useState<Date | undefined>(new Date());
+  const [expirationDate, setExpirationDate] = useState<Date>();
+
+  const [insertDateInput, setInsertDateInput] = useState<string>(
+    insertDate
+      ? `${insertDate.getFullYear()}-${(insertDate.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${insertDate
+          ?.getDate()
+          .toString()
+          .padStart(2, "0")}`
+      : "",
+  );
+  const [expirationDateInput, setExpirationDateInput] = useState<string>("");
 
   const [isUnitOpen, setIsUnitOpen] = useState(false);
 
+  useEffect(() => {
+    if (!selectedFood) return;
+
+    const date = new Date();
+    date.setDate(date.getDate() + selectedFood.expiration);
+
+    setExpirationDate(date);
+    setExpirationDateInput(
+      `${date.getFullYear()}-${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`,
+    );
+  }, [selectedFood]);
+
   const submitHandle = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  };
+
+  // 음식 검색 input change 이벤트
+  const changeFoodNameHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (selectedFood) {
+      setSelectedFood(undefined);
+      setSelectedUnit(undefined);
+    }
+    setFoodSearchInput(e.target.value);
+  };
+
+  const insertDateInputRef = useRef<HTMLInputElement>(null);
+  // 음식 넣은 날짜 blur 이벤트
+  const validateInsertDate = (dateStr: string): Date | null => {
+    if (isNaN(Date.parse(dateStr))) {
+      if (insertDateInputRef?.current) {
+        insertDateInputRef.current.classList.add("scale-105");
+        insertDateInputRef.current.classList.add("bg-red-50");
+        setTimeout(() => {
+          insertDateInputRef.current?.classList.remove("scale-105");
+          insertDateInputRef.current?.classList.remove("bg-red-50");
+        }, 200);
+      }
+      return null;
+    }
+
+    return new Date(dateStr);
+  };
+  const insertDateBlurHandle = (e: React.FocusEvent<HTMLInputElement>) => {
+    const date = validateInsertDate(e.target.value);
+
+    if (!date) return;
+
+    setInsertDate(date);
+  };
+  const insertDateKeyDownHandle = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (e.key === "Enter") {
+      const date = validateInsertDate(e.currentTarget.value);
+
+      if (!date) return;
+
+      setInsertDate(date);
+    }
+  };
+  // 넣은 날짜 change 이벤트
+  const changeInsertDateHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInsertDate(undefined);
+    setInsertDateInput(e.target.value);
+  };
+
+  const expirationDateInputRef = useRef<HTMLInputElement>(null);
+  // 소비기한 blur 이벤트
+  const validateExpirationDate = (dateStr: string): Date | null => {
+    if (isNaN(Date.parse(dateStr))) {
+      if (expirationDateInputRef?.current) {
+        expirationDateInputRef.current.classList.add("scale-105");
+        expirationDateInputRef.current.classList.add("bg-red-50");
+        setTimeout(() => {
+          expirationDateInputRef.current?.classList.remove("scale-105");
+          expirationDateInputRef.current?.classList.remove("bg-red-50");
+        }, 200);
+      }
+      return null;
+    }
+    return new Date(dateStr);
+  };
+  const expirationDateBlurHandle = (e: React.FocusEvent<HTMLInputElement>) => {
+    const date = validateExpirationDate(e.target.value);
+
+    if (!date) return;
+
+    setExpirationDate(date);
+  };
+  const expirationDateKeyDownHandle = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (e.key === "Enter") {
+      const date = validateExpirationDate(e.currentTarget.value);
+
+      if (!date) return;
+
+      if (expirationDateInputRef?.current) {
+        expirationDateInputRef.current.blur();
+      }
+      setExpirationDate(date);
+    }
+  };
+  const changeExpirationDateHandle = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setExpirationDate(undefined);
+    setExpirationDateInput(e.target.value);
+  };
+
+  // 음식 선택 이벤트
+  const foodButtonClickHandle = (food: FoodEntity) => () =>
+    setSelectedFood(food);
+
+  const unitClickHandle = (unit: UnitEntity) => () => {
+    setSelectedUnit(unit);
+    setIsUnitOpen(false);
+  };
+
+  // 단위 선택 이벤트
+  const unitInputButtonClickHandle = () => {
+    if (!selectedFood) {
+      if (foodNameInput.current) {
+        foodNameInput.current.classList.add("scale-105");
+        foodNameInput.current.classList.add("bg-red-50");
+        setTimeout(() => {
+          foodNameInput.current?.classList.remove("scale-105");
+          foodNameInput.current?.classList.remove("bg-red-50");
+        }, 200);
+      }
+
+      return;
+    }
+    setIsUnitOpen((prev) => !prev);
+  };
+
+  // 수량 입력 이벤트
+  const amountInputHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = Number(e.target.value);
+
+    if (isNaN(input)) {
+      setAmount(0);
+      return;
+    }
+
+    if (input < 0) {
+      setAmount(0);
+      return;
+    }
+
+    if (input > 2_100_000_000) {
+      setAmount(2_100_000_000);
+      return;
+    }
+
+    setAmount(input);
+  };
+
+  // 음식 검색 focus out 이벤트를 위한 useEffect
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        if (!selectedFood) {
+          setFoodSearchInput(""); // 또는 searchResult 닫는 처리
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [selectedFood]);
+
+  // 제출 가능여부 확인 메서드
+  const isSubmitAble = () => {
+    if (!selectedFood) return false;
+    if (!selectedUnit) return false;
+    if (amount <= 0) return false;
+    if (!insertDate) return false;
+    if (!expirationDate) return false;
+
+    return true;
   };
 
   return (
@@ -59,47 +253,62 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
               <form className="mt-3" onSubmit={submitHandle}>
                 {/* 음식 이름 */}
                 <div className="relative">
-                  <label
-                    htmlFor="food_name"
-                    className="text-xl font-medium text-[#585858]"
-                  >
+                  <label className="text-xl font-medium text-[#585858] w-fit">
                     음식 이름
                   </label>
-                  <input
-                    type="text"
-                    id="food_name"
-                    className="w-full h-[46px] pl-2.5
-                            text-[#585858] text-lg font-normal
-                            rounded-lg mt-3 bg-[#F7F7F7]
-                            placeholder:text-[#B7B7B7]"
-                    placeholder="검색어를 입력해주세요."
-                  />
-                  {searchResult &&
-                    searchResult.map((food, i) => (
-                      <div
-                        className="mt-2 w-full rounded-lg absolute h-[187px] 
+                  <div ref={containerRef}>
+                    <input
+                      ref={foodNameInput}
+                      type="text"
+                      id="food_name"
+                      autoComplete="off"
+                      onChange={changeFoodNameHandle}
+                      value={selectedFood?.name || foodSearchInput}
+                      className={cn(
+                        `w-full h-[46px] pl-2.5
+                        focus:outline-none
+                        text-[#585858] text-lg font-normal
+                        rounded-lg mt-3 
+                        placeholder:text-[#B7B7B7]
+                        transition-all duration-100`,
+                        selectedFood ? "bg-blue-50" : "bg-[#F7F7F7]",
+                      )}
+                      placeholder="검색어를 입력해주세요."
+                    />
+                    {foodSearchInput &&
+                      searchResult &&
+                      !selectedFood &&
+                      searchResult.map((food, i) => (
+                        <div
+                          className="mt-2 w-full rounded-lg absolute h-[187px] 
+                                white z-51
                                 bg-white
                                 border-[1px] border-[#F0F0F0] overflow-y-scroll
                                 [&::-webkit-scrollbar]:hidden"
-                      >
-                        <div
-                          key={`food-search-result-${i}`}
-                          className="h-[46px] relative cursor-pointer
+                        >
+                          <div
+                            key={`food-search-result-${i}`}
+                            className="h-[46px] relative cursor-pointer
                                     flex items-center justify-center
                                     hover:bg-[#F7F7F7]
                                     text-[#585858] text-[18px] font-normal"
-                        >
-                          <button type="button" className="">
-                            {food.name}
-                          </button>
-                          <div
-                            className="w-[394px] h-[1px] 
+                          >
+                            <button
+                              type="button"
+                              className="w-full h-full cursor-pointer text-left pl-2.5"
+                              onClick={foodButtonClickHandle(food)}
+                            >
+                              {food.name}
+                            </button>
+                            <div
+                              className="w-[394px] h-[1px] 
                                         absolute bottom-[-2px]
                                         bg-[#F0F0F0]"
-                          ></div>
+                            ></div>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                  </div>
                 </div>
                 {/* 단위 */}
                 <div className="relative mt-3">
@@ -115,9 +324,11 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                             text-[#585858] text-lg font-normal
                             rounded-lg mt-3 bg-[#F7F7F7]
                             placeholder:text-[#B7B7B7] cursor-pointer`,
-                        selectedUnit ? "text-[#585858]" : "text-[#B7B7B7]",
+                        selectedUnit
+                          ? "text-[#585858] bg-blue-50"
+                          : "text-[#B7B7B7]",
                       )}
-                      onClick={() => setIsUnitOpen((prev) => !prev)}
+                      onClick={unitInputButtonClickHandle}
                     >
                       {selectedUnit
                         ? selectedUnit.name
@@ -144,7 +355,11 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                                     hover:bg-[#F7F7F7]
                                     text-[#585858] text-[18px] font-normal"
                           >
-                            <button type="button" className="">
+                            <button
+                              type="button"
+                              className="cursor-pointer w-full h-full text-left pl-2.5"
+                              onClick={unitClickHandle(unit)}
+                            >
                               {unit.name}
                             </button>
                             <div
@@ -159,16 +374,16 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                 </div>
                 {/* 수량 */}
                 <div className="relative mt-3">
-                  <label
-                    htmlFor="food_name"
-                    className="text-xl font-medium text-[#585858]"
-                  >
+                  <label className="text-xl font-medium text-[#585858]">
                     수량
                   </label>
                   <input
                     type="text"
-                    id="food_name"
+                    autoComplete="off"
+                    value={amount}
+                    onChange={amountInputHandle}
                     className="w-full h-[46px] pl-2.5
+                            focus:outline-none
                             text-[#585858] text-lg font-normal
                             rounded-lg mt-3 bg-[#F7F7F7]
                             placeholder:text-[#B7B7B7]"
@@ -177,37 +392,74 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                 </div>
                 {/* 넣은 날짜 */}
                 <div className="relative mt-3">
-                  <label
-                    htmlFor="food_name"
-                    className="text-xl font-medium text-[#585858]"
-                  >
+                  <label className="text-xl font-medium text-[#585858]">
                     넣은 날짜
                   </label>
                   <input
+                    ref={insertDateInputRef}
                     type="text"
-                    id="food_name"
-                    className="w-full h-[46px] pl-2.5
-                            text-[#585858] text-lg font-normal
-                            rounded-lg mt-3 bg-[#F7F7F7]
-                            placeholder:text-[#B7B7B7]"
+                    autoComplete="off"
+                    value={
+                      insertDate
+                        ? `${insertDate.getFullYear()}-${(
+                            insertDate.getMonth() + 1
+                          )
+                            .toString()
+                            .padStart(2, "0")}-${insertDate
+                            .getDate()
+                            .toString()
+                            .padStart(2, "0")}`
+                        : insertDateInput
+                    }
+                    className={cn(
+                      `w-full h-[46px] pl-2.5
+                      focus:outline-none
+                      text-[#585858] text-lg font-normal
+                      rounded-lg mt-3 bg-[#F7F7F7]
+                      transition-all duration-100
+                      placeholder:text-[#B7B7B7]`,
+                      insertDate ? "bg-blue-50" : "",
+                    )}
                     placeholder="냉장고에 넣은 날짜를 입력해주세요."
+                    onBlur={insertDateBlurHandle}
+                    onChange={changeInsertDateHandle}
+                    onKeyDown={insertDateKeyDownHandle}
                   />
                 </div>
                 {/* 소비기한 */}
                 <div className="relative mt-3">
-                  <label
-                    htmlFor="food_name"
-                    className="text-xl font-medium text-[#585858]"
-                  >
+                  <label className="text-xl font-medium text-[#585858]">
                     소비기한
                   </label>
                   <input
                     type="text"
                     id="food_name"
-                    className="w-full h-[46px] pl-2.5
-                            text-[#585858] text-lg font-normal
-                            rounded-lg mt-3 bg-[#F7F7F7]
-                            placeholder:text-[#B7B7B7]"
+                    autoComplete="off"
+                    value={
+                      expirationDate
+                        ? `${expirationDate.getFullYear()}-${(
+                            expirationDate.getMonth() + 1
+                          )
+                            .toString()
+                            .padStart(2, "0")}-${expirationDate
+                            .getDate()
+                            .toString()
+                            .padStart(2, "0")}`
+                        : expirationDateInput
+                    }
+                    ref={expirationDateInputRef}
+                    onBlur={expirationDateBlurHandle}
+                    onKeyDown={expirationDateKeyDownHandle}
+                    onChange={changeExpirationDateHandle}
+                    className={cn(
+                      `w-full h-[46px] pl-2.5
+                        focus:outline-none
+                        text-[#585858] text-lg font-normal
+                        rounded-lg mt-3 bg-[#F7F7F7]
+                        transition-all duration-100
+                        placeholder:text-[#B7B7B7]`,
+                      expirationDate ? "bg-blue-50" : "",
+                    )}
                     placeholder="음식의 소비 기한을 선택해주세요."
                   />
                 </div>
@@ -215,10 +467,14 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                 <div>
                   <button
                     type="submit"
-                    className="w-full h-12 mt-5 cursor-pointer
-                            active:scale-95 transition-all duration-100
-                            text-white text-xl font-semibold
-                            bg-[#D1D1D1] rounded-lg"
+                    disabled={!isSubmitAble()}
+                    className={cn(
+                      `w-full h-12 mt-5 cursor-pointer
+                      active:scale-95 transition-all duration-100
+                      text-white text-xl font-semibold
+                      rounded-lg`,
+                      isSubmitAble() ? "bg-[#5097E0]" : "bg-[#D1D1D1]",
+                    )}
                   >
                     추가하기
                   </button>

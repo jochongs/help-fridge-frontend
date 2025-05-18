@@ -57,6 +57,7 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
             <div>
               <h3 className="">추가할 음식 정보를 알려주세요.</h3>
               <form className="mt-3" onSubmit={submitHandle}>
+                {/* 음식 이름 */}
                 <div className="relative">
                   <label
                     htmlFor="food_name"
@@ -77,6 +78,7 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                     searchResult.map((food, i) => (
                       <div
                         className="mt-2 w-full rounded-lg absolute h-[187px] 
+                                bg-white
                                 border-[1px] border-[#F0F0F0] overflow-y-scroll
                                 [&::-webkit-scrollbar]:hidden"
                       >
@@ -99,6 +101,7 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                       </div>
                     ))}
                 </div>
+                {/* 단위 */}
                 <div className="relative mt-3">
                   <label className="text-xl font-medium text-[#585858]">
                     단위
@@ -119,15 +122,16 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                       {selectedUnit
                         ? selectedUnit.name
                         : "단위를 선택해주세요."}
+                      <div className="absolute right-2.5 bottom-3">
+                        <ArrowDown />
+                      </div>
                     </button>
                   </div>
-                  <div className="absolute right-2.5 bottom-3">
-                    <ArrowDown />
-                  </div>
+
                   {isUnitOpen && (
                     <div
-                      className="w-full h-[187px] rounded-lg mt-2 overflow-y-scroll
-                                absolute
+                      className="w-full h-[187px] rounded-lg mt-2 overflow-y-scroll 
+                                absolute bg-white z-1
                                 border-[1px] border-[#F0F0F0] 
                                 [&::-webkit-scrollbar]:hidden"
                     >
@@ -153,6 +157,25 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                     </div>
                   )}
                 </div>
+                {/* 수량 */}
+                <div className="relative mt-3">
+                  <label
+                    htmlFor="food_name"
+                    className="text-xl font-medium text-[#585858]"
+                  >
+                    수량
+                  </label>
+                  <input
+                    type="text"
+                    id="food_name"
+                    className="w-full h-[46px] pl-2.5
+                            text-[#585858] text-lg font-normal
+                            rounded-lg mt-3 bg-[#F7F7F7]
+                            placeholder:text-[#B7B7B7]"
+                    placeholder="양을 입력해주세요."
+                  />
+                </div>
+                {/* 넣은 날짜 */}
                 <div className="relative mt-3">
                   <label
                     htmlFor="food_name"
@@ -170,23 +193,7 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                     placeholder="냉장고에 넣은 날짜를 입력해주세요."
                   />
                 </div>
-                <div className="relative mt-3">
-                  <label
-                    htmlFor="food_name"
-                    className="text-xl font-medium text-[#585858]"
-                  >
-                    수량
-                  </label>
-                  <input
-                    type="text"
-                    id="food_name"
-                    className="w-full h-[46px] pl-2.5
-                            text-[#585858] text-lg font-normal
-                            rounded-lg mt-3 bg-[#F7F7F7]
-                            placeholder:text-[#B7B7B7]"
-                    placeholder="음식의 소비 기한을 선택해주세요."
-                  />
-                </div>
+                {/* 소비기한 */}
                 <div className="relative mt-3">
                   <label
                     htmlFor="food_name"
@@ -201,9 +208,10 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                             text-[#585858] text-lg font-normal
                             rounded-lg mt-3 bg-[#F7F7F7]
                             placeholder:text-[#B7B7B7]"
-                    placeholder="양을 입력해주세요."
+                    placeholder="음식의 소비 기한을 선택해주세요."
                   />
                 </div>
+                {/* 추가하기 버튼 */}
                 <div>
                   <button
                     type="submit"

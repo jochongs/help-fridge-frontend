@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { isValidElement, useEffect, useRef, useState } from "react";
 import {
   foodMockingData,
   foodMockingData2,
@@ -8,13 +8,23 @@ import ArrowDown from "../../../icon/ArrowDown";
 import { cn } from "../../../util/cn";
 import type { UnitEntity } from "../../../types/api/unit/model/unit";
 import { useSearchFood } from "../hooks/useSearchFood";
+import useAddFridge from "../hooks/useAddFridge";
+import type { StorageType } from "../../../types/storage-type";
+import LoadingSpinner from "../../../icon/LoadingSpinner";
 
 interface Props {
   onClose: () => void;
   isOpen: boolean;
+  afterSuccess: (type: StorageType) => void;
+  type: StorageType;
 }
 
-export default function AddFridgeDialog({ isOpen, onClose }: Props) {
+export default function AddFridgeDialog({
+  isOpen,
+  onClose,
+  afterSuccess,
+  type,
+}: Props) {
   const closeDialog = () => {
     onClose();
   };
@@ -44,6 +54,12 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
 
   const [isUnitOpen, setIsUnitOpen] = useState(false);
 
+  const { mutate, status: submitStatus } = useAddFridge({
+    onSuccess: () => {
+      afterSuccess(type);
+    },
+  });
+
   useEffect(() => {
     if (!selectedFood) return;
 
@@ -60,6 +76,41 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
 
   const submitHandle = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (submitStatus === "pending") {
+      return;
+    }
+
+    if (!selectedFood) {
+      return;
+    }
+    if (!selectedUnit) {
+      return;
+    }
+    if (amount <= 0) {
+      return;
+    }
+    if (!expirationDate) {
+      return;
+    }
+
+    const date = new Date();
+    date.setDate(date.getDate() + selectedFood.expiration);
+
+    const expiredAt = expirationDate;
+
+    const isSameDate =
+      date.getFullYear() === expiredAt.getFullYear() &&
+      date.getMonth() === expiredAt.getMonth() &&
+      date.getDate() === expiredAt.getDate();
+
+    mutate({
+      foodIdx: selectedFood.idx,
+      unitIdx: selectedUnit.idx,
+      storage: type,
+      amount,
+      expiredAt: isSameDate ? null : expirationDate,
+    });
   };
 
   // 음식 검색 input change 이벤트
@@ -243,7 +294,7 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
           onClick={closeDialog}
         >
           <article
-            className="w-[440px] rounded-[20px] h-[622px] 
+            className="w-[440px] rounded-[20px]
             animate-[var(--animate-popin)] p-5 bg-white
             flex flex-col text-xl font-semibold"
             onClick={(e) => e.stopPropagation()}
@@ -391,7 +442,7 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                   />
                 </div>
                 {/* 넣은 날짜 */}
-                <div className="relative mt-3">
+                {/* <div className="relative mt-3">
                   <label className="text-xl font-medium text-[#585858]">
                     넣은 날짜
                   </label>
@@ -425,7 +476,7 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                     onChange={changeInsertDateHandle}
                     onKeyDown={insertDateKeyDownHandle}
                   />
-                </div>
+                </div> */}
                 {/* 소비기한 */}
                 <div className="relative mt-3">
                   <label className="text-xl font-medium text-[#585858]">
@@ -472,11 +523,16 @@ export default function AddFridgeDialog({ isOpen, onClose }: Props) {
                       `w-full h-12 mt-5 cursor-pointer
                       active:scale-95 transition-all duration-100
                       text-white text-xl font-semibold
+                      flex items-center justify-center
                       rounded-lg`,
                       isSubmitAble() ? "bg-[#5097E0]" : "bg-[#D1D1D1]",
                     )}
                   >
-                    추가하기
+                    {submitStatus === "pending" ? (
+                      <LoadingSpinner />
+                    ) : (
+                      "추가하기"
+                    )}
                   </button>
                 </div>
               </form>

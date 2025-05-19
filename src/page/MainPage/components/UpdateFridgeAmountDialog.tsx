@@ -168,7 +168,8 @@ export default function UpdateFridgeAmountDialog({
                   ref={inputRef}
                   type="text"
                   className={cn(
-                    "caret-transparent w-10 h-8.5 text-xl rounded-sm bg-[#F0F0F0] mr-1.5 text-[#494949] flex justify-center items-center text-center focus:outline-none",
+                    "caret-transparent h-8.5 text-xl rounded-sm bg-[#F0F0F0] mr-1.5 text-[#494949] flex justify-center items-center text-center focus:outline-none",
+                    fridge.amount.toString().length >= 4 ? "w-12" : "w-8",
                   )}
                   value={amountInput}
                   onChange={(e) => {

@@ -45,7 +45,7 @@ export default function LoginPage() {
   const isLoading = loginApiStatus === "pending";
 
   return (
-    <div className="relative flex justify-center items-center bg-[#F5F5F5] h-screen">
+    <div className="relative flex justify-center items-center bg-[#F5F5F5] min-h-screen">
       <form
         onSubmit={loginButtonHandler}
         className="max-w-[600px] w-full bg-white rounded-[20px] 

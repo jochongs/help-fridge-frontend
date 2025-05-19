@@ -83,6 +83,9 @@ export default function UpdateFridgeAmountDialog({
     // if (e.key === "ArrowRight") {
     //   setAmountInput(fridge.amount);
     // }
+    if (e.key === "Escape") {
+      onClose();
+    }
     if (e.key === "ArrowDown") {
       setAmountInput((prev) => {
         if (prev === 0) return 0;

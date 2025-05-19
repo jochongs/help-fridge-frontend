@@ -77,12 +77,12 @@ export default function UpdateFridgeAmountDialog({
   };
 
   const onPressInInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "ArrowLeft") {
-      setAmountInput(0);
-    }
-    if (e.key === "ArrowRight") {
-      setAmountInput(fridge.amount);
-    }
+    // if (e.key === "ArrowLeft") {
+    //   setAmountInput(0);
+    // }
+    // if (e.key === "ArrowRight") {
+    //   setAmountInput(fridge.amount);
+    // }
     if (e.key === "ArrowDown") {
       setAmountInput((prev) => {
         if (prev === 0) return 0;
@@ -167,7 +167,9 @@ export default function UpdateFridgeAmountDialog({
                   onKeyDown={onPressInInput}
                   ref={inputRef}
                   type="text"
-                  className="caret-transparent w-8.5 h-8.5 text-xl rounded-sm bg-[#F0F0F0] mr-1.5 text-[#494949] flex justify-center items-center text-center focus:outline-none"
+                  className={cn(
+                    "caret-transparent w-10 h-8.5 text-xl rounded-sm bg-[#F0F0F0] mr-1.5 text-[#494949] flex justify-center items-center text-center focus:outline-none",
+                  )}
                   value={amountInput}
                   onChange={(e) => {
                     const value = e.target.value;

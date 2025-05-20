@@ -173,6 +173,7 @@ export default function AddFridgeDialog({
   // 소비기한 blur 이벤트
   const validateExpirationDate = (dateStr: string): Date | null => {
     const parsedDate = new Date(dateStr);
+    parsedDate.setHours(0, 0, 0, 0);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -187,7 +188,7 @@ export default function AddFridgeDialog({
       }
       return null;
     }
-    return new Date(dateStr);
+    return parsedDate;
   };
   const expirationDateBlurHandle = (e: React.FocusEvent<HTMLInputElement>) => {
     const date = validateExpirationDate(e.target.value);

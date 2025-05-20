@@ -27,7 +27,7 @@ export default function RecommendRecipeCard({
         </header>
         <main className="mt-3">
           <p className="text-[#969696] text-base font-normal ">
-            {recommendRecipe.recipe.ingredient.map((ingredient) => (
+            {recommendRecipe.recipe.ingredient.map((ingredient, i) => (
               <span
                 className={cn(
                   (fridgeList || []).some(
@@ -38,6 +38,7 @@ export default function RecommendRecipeCard({
                 )}
               >
                 {ingredient.name}
+                {recommendRecipe.recipe.ingredient.length - 1 !== i ? ", " : ""}
               </span>
             ))}
           </p>

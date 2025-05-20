@@ -38,7 +38,10 @@ export default function FoodCard({ fridge }: Props) {
 
   const subExpiredAt = (expiredAt: Date) => {
     const today = new Date();
-    const diffTime = Math.abs(expiredAt.getTime() - today.getTime());
+    today.setHours(0, 0, 0, 0);
+    expiredAt.setHours(0, 0, 0, 0);
+
+    const diffTime = expiredAt.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
@@ -67,7 +70,11 @@ export default function FoodCard({ fridge }: Props) {
       <header className="flex">
         <h3 className="text-xl font-semibold mr-2">{fridge.food.name}</h3>
         <Chip type={color} className="mr-0.5">
-          {diffDays < 0 ? "유통기한 만료" : `D-${diffDays}`}
+          {diffDays > 0
+            ? `D-${diffDays}`
+            : diffDays === 0
+            ? 'D-day'
+            : `D+${Math.abs(diffDays)}`}
         </Chip>
         <Chip type="gray">{`${fridge.amount}${fridge.unit.name}`}</Chip>
       </header>

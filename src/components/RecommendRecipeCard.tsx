@@ -27,21 +27,19 @@ export default function RecommendRecipeCard({
         </header>
         <main className="mt-3">
           <p className="text-[#969696] text-base font-normal ">
-            {recommendRecipe.recipe.ingredient
-              .map((ingredient) => (
-                <span
-                  className={cn(
-                    (fridgeList || []).some(
-                      (fridge) => fridge.food.idx === ingredient.idx,
-                    )
-                      ? "text-[#FF6B00]"
-                      : "text-[#969696]",
-                  )}
-                >
-                  {ingredient.name}
-                </span>
-              ))
-              .join(", ")}
+            {recommendRecipe.recipe.ingredient.map((ingredient) => (
+              <span
+                className={cn(
+                  (fridgeList || []).some(
+                    (fridge) => fridge.food.idx === ingredient.idx,
+                  )
+                    ? "text-[#FF6B00]"
+                    : "text-[#969696]",
+                )}
+              >
+                {ingredient.name}
+              </span>
+            ))}
           </p>
         </main>
       </div>

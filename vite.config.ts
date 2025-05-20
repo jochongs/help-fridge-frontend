@@ -5,7 +5,7 @@ import { ViteFaviconsPlugin } from "vite-plugin-favicon";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), ViteFaviconsPlugin("favicon.png")],
+  plugins: [react(), tailwindcss()],
   server: {
     host: true,
     port: 5173,

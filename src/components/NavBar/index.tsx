@@ -2,7 +2,7 @@ export default function NavBar() {
   return (
     <header className="bg-white">
       <div className="max-w-[920px] h-[62px] flex justify-between items-center mx-auto">
-        <button className="w-6 h-6 ml-12.5">
+        <a className="w-6 h-6 ml-12.5 cursor-pointer" href="/">
           <svg
             width="24"
             height="24"
@@ -20,7 +20,7 @@ export default function NavBar() {
               />
             </g>
           </svg>
-        </button>
+        </a>
         <div className="mr-12.5 flex gap-4">
           <a
             className="flex font-base text-[#818181] items-center gap-2"

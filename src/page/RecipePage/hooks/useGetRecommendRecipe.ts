@@ -13,7 +13,7 @@ export const useGetRecommendedRecipe = (type: RecommendType) => {
     queryKey: ["recipe-recommend", type],
     queryFn: async () => {
       const response = await axiosInstance.get<RecommendRecipeEntity[]>(
-        "/recipe/recommend?type=" + type
+        "/recipe/recommend?type=" + type,
       );
       return response.data;
     },

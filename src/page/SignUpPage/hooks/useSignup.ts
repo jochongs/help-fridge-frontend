@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "../../../util/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { wait } from "../../../util/wait";
 
 interface SignupDto {
   id: string;
@@ -57,6 +58,7 @@ export default function useSignup() {
 
   return useMutation({
     mutationFn: async (data: SignupDto) => {
+      await wait(1000);
       if (!validationCheck(data)) {
         return;
       }

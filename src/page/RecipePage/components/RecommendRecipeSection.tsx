@@ -11,12 +11,14 @@ import { cn } from "../../../util/cn";
 interface Props extends StrictPropsWithChildren {
   className?: string;
   recommendRecipeList?: RecommendRecipeEntity[];
+  fridgeList?: FridgeEntity[];
 }
 
 export default function RecommendRecipeSection({
   className = "",
   children,
   recommendRecipeList,
+  fridgeList,
 }: Props) {
   // if (typeof fridgeList === "string") {
   //   fridgeList = [fridgeMockingData];
@@ -40,6 +42,7 @@ export default function RecommendRecipeSection({
                 <RecommendRecipeCard
                   key={recommendRecipe.recipe.idx}
                   recommendRecipe={recommendRecipe}
+                  fridgeList={fridgeList}
                 />
               ))}
           </div>

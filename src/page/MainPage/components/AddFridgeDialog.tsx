@@ -172,7 +172,12 @@ export default function AddFridgeDialog({
   const expirationDateInputRef = useRef<HTMLInputElement>(null);
   // 소비기한 blur 이벤트
   const validateExpirationDate = (dateStr: string): Date | null => {
-    if (isNaN(Date.parse(dateStr))) {
+    const parsedDate = new Date(dateStr);
+    parsedDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (isNaN(Date.parse(dateStr)) || parsedDate < today) {
       if (expirationDateInputRef?.current) {
         expirationDateInputRef.current.classList.add("scale-105");
         expirationDateInputRef.current.classList.add("bg-red-50");
@@ -183,7 +188,7 @@ export default function AddFridgeDialog({
       }
       return null;
     }
-    return new Date(dateStr);
+    return parsedDate;
   };
   const expirationDateBlurHandle = (e: React.FocusEvent<HTMLInputElement>) => {
     const date = validateExpirationDate(e.target.value);
@@ -206,11 +211,24 @@ export default function AddFridgeDialog({
       setExpirationDate(date);
     }
   };
+
   const changeExpirationDateHandle = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setExpirationDate(undefined);
-    setExpirationDateInput(e.target.value);
+    const inputValue = e.target.value;
+    setExpirationDateInput(inputValue);
+  
+    if (inputValue.length < 10) {
+      setExpirationDate(undefined);
+      return;
+    }
+  
+    const date = validateExpirationDate(inputValue);
+    if (date) {
+      setExpirationDate(date);
+    } else {
+      setExpirationDate(undefined);
+    }
   };
 
   // 음식 선택 이벤트

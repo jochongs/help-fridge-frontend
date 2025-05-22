@@ -56,7 +56,7 @@ export default function RecommendRecipeCard({
 
   return (
     <article
-      className="w-full px-4 py-2.5 rounded-lg border-2 border-[#F2F2F2] cursor-pointer"
+      className="w-full px-4 py-2.5 rounded-lg border-2 border-[#F2F2F2] cursor-pointer hover:bg-[#F2F2F2] transition-all duration-100 ease-in-out"
       onClick={handleClick}
     >
       <div>

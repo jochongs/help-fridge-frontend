@@ -4,12 +4,13 @@ import FoodCard from "./FoodCard";
 
 interface Props {
   fridge: FridgeEntity;
+  refetch: () => void;
 }
 
-export default function FoodCardDrag({ fridge }: Props) {
+export default function FoodCardDrag({ fridge, refetch }: Props) {
   const [{ opacity }, dragRef] = useDrag({
     type: "FOOD",
-    item: () => ({ fridge }), // ✅ item을 함수로 전달 → 최신 fridge 사용
+    item: () => ({ fridge, refetch }), // ✅ item을 함수로 전달 → 최신 fridge 사용
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,
     }),

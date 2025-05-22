@@ -6,7 +6,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 interface Options {
-  onSuccess: (fridge: FridgeEntity, toStorageIdx: StorageType) => void;
+  onSuccess: (params: {
+    fridge: FridgeEntity;
+    toStorageIdx: StorageType;
+    fromRefetch?: () => void;
+    toRefetch?: () => void;
+  }) => void;
 }
 
 export default function useUpdateFridgeType({ onSuccess }: Options) {
@@ -16,18 +21,22 @@ export default function useUpdateFridgeType({ onSuccess }: Options) {
     mutationFn: async ({
       fridge,
       toStorageIdx,
+      fromRefetch,
+      toRefetch,
     }: {
       fridge: FridgeEntity;
       toStorageIdx: StorageType;
+      fromRefetch?: () => void;
+      toRefetch?: () => void;
     }) => {
       await axiosInstance.put<void>(`/v2/fridge/${fridge.idx}`, {
         storage: toStorageIdx,
       });
 
-      return { fridge, toStorageIdx };
+      return { fridge, toStorageIdx, fromRefetch, toRefetch };
     },
-    onSuccess({ fridge, toStorageIdx }) {
-      onSuccess(fridge, toStorageIdx);
+    onSuccess({ fridge, toStorageIdx, fromRefetch, toRefetch }) {
+      onSuccess({ fridge, toStorageIdx, fromRefetch, toRefetch });
     },
     onError(err) {
       if (axios.isAxiosError(err)) {

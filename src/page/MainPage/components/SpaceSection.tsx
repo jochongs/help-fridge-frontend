@@ -37,31 +37,38 @@ export default function SpaceSection({
   } = useGetFridgeAll(type, sortType);
 
   const { mutate } = useUpdateFridgeType({
-    onSuccess(fridge, toStorageIdx) {
-      refetchFridgeListData();
+    onSuccess({ fridge, toStorageIdx, fromRefetch, toRefetch }) {
+      fromRefetch?.();
+      toRefetch?.();
     },
   });
 
   const [dropFridge, setDropFridge] = useState<FridgeEntity | undefined>();
 
-  const [{ isOver }, dropRef] = useDrop(() => ({
+  const [{ isOver }, dropRef] = useDrop({
     accept: "FOOD",
-    drop: async (item: { fridge: FridgeEntity }) => {
-      const fridge = item.fridge;
+    drop: (item: { fridge: FridgeEntity; refetch: () => void }) => {
+      const { fridge, refetch } = item;
+
       if (fridge.storage !== type) {
-        mutate({ fridge, toStorageIdx: type });
+        mutate({
+          fridge,
+          toStorageIdx: type,
+          fromRefetch: refetch,
+          toRefetch: refetchFridgeListData,
+        });
+      }
+    },
+    hover: (item, monitor) => {
+      const { fridge } = item;
+      if (fridge.storage !== type) {
+        setDropFridge(fridge);
       }
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
-    hover: (item: { fridge: FridgeEntity }) => {
-      const fridge = item.fridge;
-      if (fridge.storage !== type) {
-        setDropFridge(fridge);
-      }
-    },
-  }));
+  });
 
   useEffect(() => {
     if (!isOver) {
@@ -103,7 +110,11 @@ export default function SpaceSection({
         <main className="mt-4 h-[300px] overflow-y-scroll pb-4 [&::-webkit-scrollbar]:hidden items-start">
           <div className="grid grid-cols-3 gap-2">
             {(fridgeListData ?? []).map((fridge) => (
-              <FoodCardDrag key={fridge.food.idx} fridge={fridge} />
+              <FoodCardDrag
+                key={fridge.food.idx}
+                fridge={fridge}
+                refetch={refetchFridgeListData}
+              />
             ))}
           </div>
         </main>

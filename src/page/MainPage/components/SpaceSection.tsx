@@ -13,6 +13,7 @@ import { useGetFridgeAll } from "../hooks/useGetFridgeAll";
 import { useDrop } from "react-dnd";
 import useUpdateFridgeType from "../hooks/useUpdateFridgeType";
 import { AddFridgeButton } from "./AddFridgeButton";
+import type { SortType } from "../../../types/sort-type";
 
 interface Props extends StrictPropsWithChildren {
   className?: string;
@@ -28,20 +29,25 @@ export default function SpaceSection({
   type,
   refetchFridgeList,
 }: Props) {
+  const [sortType, setSortType] = useState<SortType>(1);
+
+  const {
+    query: { data: fridgeListData },
+    rerender: refetchFridgeListData,
+  } = useGetFridgeAll(type, sortType);
+
   const { mutate } = useUpdateFridgeType({
     onSuccess(fridge, toStorageIdx) {
-      refetchFridgeList[(fridge.storage - 1) as number]();
-      refetchFridgeList[(toStorageIdx - 1) as number]();
+      refetchFridgeListData();
     },
   });
 
-  const [dropFridge, setDropFridge] = useState<FridgeEntity>();
+  const [dropFridge, setDropFridge] = useState<FridgeEntity | undefined>();
 
   const [{ isOver }, dropRef] = useDrop(() => ({
     accept: "FOOD",
     drop: async (item: { fridge: FridgeEntity }) => {
       const fridge = item.fridge;
-
       if (fridge.storage !== type) {
         mutate({ fridge, toStorageIdx: type });
       }
@@ -51,7 +57,6 @@ export default function SpaceSection({
     }),
     hover: (item: { fridge: FridgeEntity }) => {
       const fridge = item.fridge;
-
       if (fridge.storage !== type) {
         setDropFridge(fridge);
       }
@@ -64,12 +69,8 @@ export default function SpaceSection({
     }
   }, [isOver]);
 
-  if (typeof fridgeList === "string") {
-    fridgeList = [fridgeMockingData];
-  }
-
   const addFridgeSuccess = () => {
-    refetchFridgeList[type - 1]();
+    refetchFridgeListData();
   };
 
   return (
@@ -83,22 +84,27 @@ export default function SpaceSection({
     >
       <article>
         <header className="font-semibold text-2xl select-none flex justify-between items-end">
-          <h1>{children}</h1>
-          <AddFridgeButton
-            type={type}
-            onSuccess={() => {
-              addFridgeSuccess();
-            }}
-          />
+          <div className="flex items-center gap-2">
+            <h1>{children}</h1>
+            <select
+              className="border border-[#D9D9D9] rounded-lg px-2 py-1 text-sm"
+              value={sortType}
+              onChange={(e) => {
+                setSortType(Number(e.target.value) as SortType);
+              }}
+            >
+              <option value={1}>만료 날짜</option>
+              <option value={2}>이름</option>
+              <option value={3}>넣은 날짜</option>
+            </select>
+          </div>
+          <AddFridgeButton type={type} onSuccess={addFridgeSuccess} />
         </header>
-        <main className="mt-4  h-[300px] overflow-y-scroll pb-4 [&::-webkit-scrollbar]:hidden items-start">
+        <main className="mt-4 h-[300px] overflow-y-scroll pb-4 [&::-webkit-scrollbar]:hidden items-start">
           <div className="grid grid-cols-3 gap-2">
-            {/* {dropFridge && <FoodCardDrag fridge={dropFridge} />} */}
-
-            {fridgeList &&
-              fridgeList.map((fridge) => (
-                <FoodCardDrag key={fridge.food.idx} fridge={fridge} />
-              ))}
+            {(fridgeListData ?? []).map((fridge) => (
+              <FoodCardDrag key={fridge.food.idx} fridge={fridge} />
+            ))}
           </div>
         </main>
       </article>

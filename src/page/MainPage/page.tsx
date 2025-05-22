@@ -1,5 +1,6 @@
 import NavBar from "../../components/NavBar";
 import { fridgeHistoryReason } from "../../types/fridge-history-type";
+import { sortType } from "../../types/sort-type";
 import { storageType } from "../../types/storage-type";
 import { DropArea } from "./components/DropArea";
 import SpaceSection from "./components/SpaceSection";
@@ -9,17 +10,17 @@ function MainPage() {
   const {
     query: { data: fridgeList1 },
     rerender: refetchFrozFridge,
-  } = useGetFridgeAll(storageType.FROZ);
+  } = useGetFridgeAll(storageType.FROZ, sortType.EXP);
 
   const {
     query: { data: fridgeList2 },
     rerender: refetchRefrFridge,
-  } = useGetFridgeAll(storageType.REFR);
+  } = useGetFridgeAll(storageType.REFR, sortType.EXP);
 
   const {
     query: { data: fridgeList3 },
     rerender: refetchDrawFridge,
-  } = useGetFridgeAll(storageType.DRAW);
+  } = useGetFridgeAll(storageType.DRAW, sortType.EXP);
 
   return (
     <>

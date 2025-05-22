@@ -5,8 +5,9 @@ import type { StorageType } from "../../../types/storage-type";
 import type { FridgeEntity } from "../../../types/api/fridge/model/fridge";
 import type { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
+import type { SortType } from "../../../types/sort-type";
 
-export const useGetFridgeAll = (type: StorageType) => {
+export const useGetFridgeAll = (storageType: StorageType, sortType: SortType) => {
   const [flag, setFlag] = useState(false);
 
   const navigate = useNavigate();
@@ -16,10 +17,10 @@ export const useGetFridgeAll = (type: StorageType) => {
   };
 
   const query = useQuery<FridgeEntity[], AxiosError>({
-    queryKey: [`fridge-all-${flag}-${type}`],
+    queryKey: [`fridge-all-${flag}-${storageType}-${sortType}`],
     async queryFn() {
       const response = await axiosInstance.get<FridgeEntity[]>(
-        "/v2/fridge?type=" + type,
+        `/v2/fridge?storageType=${storageType}&sortType=${sortType}`,
       );
       return response.data;
     },

@@ -27,6 +27,7 @@ export default function RecipePage() {
             recommendRecipeList={recommendRecipeList1}
             className="mt-9"
             fridgeList={fridgeList}
+            type={recommendType.NEAR}
           >
             버리기 아까운 재료
           </RecommendRecipeSection>

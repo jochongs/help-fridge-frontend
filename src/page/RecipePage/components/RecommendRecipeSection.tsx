@@ -5,6 +5,7 @@ import {
 } from "../../../types/api/fridge/model/fridge";
 import type { RecommendRecipeEntity } from "../../../types/api/recommend-recipe/model/recommend-recipe";
 import type { StrictPropsWithChildren } from "../../../types/react";
+import type { RecommendType } from "../../../types/recommend-type";
 import { type StorageType } from "../../../types/storage-type";
 import { cn } from "../../../util/cn";
 
@@ -12,6 +13,7 @@ interface Props extends StrictPropsWithChildren {
   className?: string;
   recommendRecipeList?: RecommendRecipeEntity[];
   fridgeList?: FridgeEntity[];
+  type?: RecommendType;
 }
 
 export default function RecommendRecipeSection({
@@ -19,6 +21,7 @@ export default function RecommendRecipeSection({
   children,
   recommendRecipeList,
   fridgeList,
+  type,
 }: Props) {
   // if (typeof fridgeList === "string") {
   //   fridgeList = [fridgeMockingData];
@@ -43,6 +46,7 @@ export default function RecommendRecipeSection({
                   key={recommendRecipe.recipe.idx}
                   recommendRecipe={recommendRecipe}
                   fridgeList={fridgeList}
+                  type={type}
                 />
               ))}
           </div>

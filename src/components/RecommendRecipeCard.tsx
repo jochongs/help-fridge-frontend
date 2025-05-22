@@ -14,6 +14,13 @@ export default function RecommendRecipeCard({
   const handleClick = () => {
     window.open(recommendRecipe.url, "_blank");
   };
+
+  // ingredient의 idx를 기준으로 중복된 idx는 제거
+  const ingredientList = recommendRecipe.recipe.ingredient.filter(
+    (ingredient, index, self) =>
+      index === self.findIndex((i) => i.idx === ingredient.idx),
+  );
+
   return (
     <article
       className="w-full px-4 py-2.5 rounded-lg border-2 border-[#F2F2F2] cursor-pointer"
@@ -27,7 +34,7 @@ export default function RecommendRecipeCard({
         </header>
         <main className="mt-3">
           <p className="text-[#969696] text-base font-normal ">
-            {recommendRecipe.recipe.ingredient.map((ingredient, i) => (
+            {ingredientList.map((ingredient, i) => (
               <span
                 className={cn(
                   (fridgeList || []).some(
@@ -38,7 +45,7 @@ export default function RecommendRecipeCard({
                 )}
               >
                 {ingredient.name}
-                {recommendRecipe.recipe.ingredient.length - 1 !== i ? ", " : ""}
+                {ingredientList.length - 1 !== i ? ", " : ""}
               </span>
             ))}
           </p>

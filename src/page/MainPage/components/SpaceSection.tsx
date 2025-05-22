@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import FoodCard from "../../../components/FoodCard";
 import FoodCardDrag from "../../../components/FoodCardDrag";
 import type { FoodEntity } from "../../../types/api/food/model/food";
@@ -13,6 +13,7 @@ import { useGetFridgeAll } from "../hooks/useGetFridgeAll";
 import { useDrop } from "react-dnd";
 import useUpdateFridgeType from "../hooks/useUpdateFridgeType";
 import { AddFridgeButton } from "./AddFridgeButton";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 interface Props extends StrictPropsWithChildren {
   className?: string;
@@ -72,6 +73,20 @@ export default function SpaceSection({
     refetchFridgeList[type - 1]();
   };
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const selectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newParams = new URLSearchParams(location.search);
+    const selectedValue = e.target.value;
+
+    newParams.set(`storage${type}`, selectedValue);
+
+    navigate(`${location.pathname}?${newParams.toString()}`, {
+      replace: false,
+    });
+  };
+
   return (
     <section
       ref={dropRef as any}
@@ -83,7 +98,17 @@ export default function SpaceSection({
     >
       <article>
         <header className="font-semibold text-2xl select-none flex justify-between items-end">
-          <h1>{children}</h1>
+          <div className="flex items-center gap-2">
+            <h1>{children}</h1>
+            <select
+              className="border border-[#D9D9D9] rounded-lg px-2 py-1 text-sm"
+              onChange={selectChange}
+            >
+              <option value={1}>만료 날짜</option>
+              <option value={2}>이름</option>
+              <option value={3}>넣은 날짜</option>
+            </select>
+          </div>
           <AddFridgeButton
             type={type}
             onSuccess={() => {
@@ -97,7 +122,7 @@ export default function SpaceSection({
 
             {fridgeList &&
               fridgeList.map((fridge) => (
-                <FoodCardDrag key={fridge.food.idx} fridge={fridge} />
+                <FoodCardDrag key={fridge.idx} fridge={fridge} />
               ))}
           </div>
         </main>

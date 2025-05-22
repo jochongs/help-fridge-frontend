@@ -19,7 +19,7 @@ export const useGetFridgeAll = (type: StorageType) => {
     queryKey: [`fridge-all-${flag}-${type}`],
     async queryFn() {
       const response = await axiosInstance.get<FridgeEntity[]>(
-        "/v2/fridge?type=" + type,
+        "/v2/fridge?storageType=" + type,
       );
       return response.data;
     },

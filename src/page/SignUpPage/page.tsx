@@ -52,6 +52,7 @@ export default function SignUpPage() {
 
   const idInputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
       setIdInput(e.target.value);
+      setIsIdChecked(false);
     };
   
   const passwordInputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +112,8 @@ export default function SignUpPage() {
                 <button
                   type="button"
                   onClick={handleIdCheck}
-                  className="h-11 px-4 bg-blue-100 text-blue-600 rounded-lg whitespace-nowrap"
+                  className="h-11 px-4 bg-blue-100 text-blue-600 rounded-lg whitespace-nowrap cursor-pointer
+                            hover:bg-blue-200 transition duration-200 ease-in-out"
                   disabled={isIdChecked}
                 >
                   중복확인

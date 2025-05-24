@@ -217,12 +217,12 @@ export default function AddFridgeDialog({
   ) => {
     const inputValue = e.target.value;
     setExpirationDateInput(inputValue);
-  
+
     if (inputValue.length < 10) {
       setExpirationDate(undefined);
       return;
     }
-  
+
     const date = validateExpirationDate(inputValue);
     if (date) {
       setExpirationDate(date);

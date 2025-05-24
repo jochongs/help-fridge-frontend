@@ -12,10 +12,10 @@ export default function SignUpPage() {
   const [isIdChecked, setIsIdChecked] = useState(false);
 
   const signupBUttonRef = useRef<HTMLButtonElement>(null);
-  
+
   const signupButtonHandler = (e: FormEvent<HTMLElement>) => {
     e.preventDefault();
-    
+
     if (signupBUttonRef.current) {
       signupBUttonRef.current.classList.add("bg-[#488bcd]");
       signupBUttonRef.current.classList.add("scale-95");
@@ -24,7 +24,7 @@ export default function SignUpPage() {
         signupBUttonRef.current?.classList.remove("scale-95");
       }, 200);
     }
-    
+
     if (idInput === "") {
       alert("아이디를 입력해주세요.");
       return;
@@ -38,11 +38,11 @@ export default function SignUpPage() {
       return;
     }
 
-    if(!isIdChecked) {
+    if (!isIdChecked) {
       alert("아이디 중복확인을 해주세요.");
       return;
     }
-    
+
     mutate({
       id: idInput,
       pw: passwordInput,
@@ -51,9 +51,10 @@ export default function SignUpPage() {
   };
 
   const idInputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-      setIdInput(e.target.value);
-    };
-  
+    setIdInput(e.target.value);
+    setIsIdChecked(false);
+  };
+
   const passwordInputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setPasswordInput(e.target.value);
   };
@@ -172,20 +173,20 @@ export default function SignUpPage() {
             </p>
           </div>
           <div className="mt-10 w-full mb-7">
-          <button
-            ref={signupBUttonRef}
-            type="submit"
-            className={cn(
-            `w-full h-12 cursor-pointer
+            <button
+              ref={signupBUttonRef}
+              type="submit"
+              className={cn(
+                `w-full h-12 cursor-pointer
             flex justify-center items-center
             text-xl rounded-lg text-[#FFFFFF]
             active:bg-[#488bcd] active:scale-95
             transition-all duration-200 ease-in-out`,
-            true ? "bg-[#5097E0]" : "bg-[#D1D1D1]",
-            )}
-          >
-            {isLoading ? <LoadingSpinner /> : "회원가입"}
-          </button>
+                true ? "bg-[#5097E0]" : "bg-[#D1D1D1]",
+              )}
+            >
+              {isLoading ? <LoadingSpinner /> : "회원가입"}
+            </button>
           </div>
         </div>
       </form>

@@ -54,6 +54,9 @@ export default function FoodCard({ fridge }: Props) {
   );
 
   const calculateColor = (diffDays: number) => {
+    if (diffDays <= -1) {
+      return "purple";
+    }
     if (diffDays <= 3) {
       return "red";
     }
@@ -73,7 +76,7 @@ export default function FoodCard({ fridge }: Props) {
           {diffDays > 0
             ? `D-${diffDays}`
             : diffDays === 0
-            ? 'D-day'
+            ? "D-day"
             : `D+${Math.abs(diffDays)}`}
         </Chip>
         <Chip type="gray">{`${fridge.amount}${fridge.unit.name}`}</Chip>
